@@ -1,5 +1,7 @@
-streamlit==1.51.0
+streamlit>=1.40.0
 pandas
 numpy
 plotly
 scipy
+pyarrow>=18.0.0
+matplotlib
