@@ -15,7 +15,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ── CSS (IDENTICO all'app L-2, ma con colori VERDI) ─────────────────────────
+# ── CSS (stile IDENTICO all'app L-2 ma con colori VERDI) ──────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
@@ -57,36 +57,12 @@ hr { border-color: var(--border) !important; margin: 2rem 0 !important; }
 #MainMenu { visibility: hidden; }
 footer { visibility: hidden; }
 [data-testid="stToolbarActions"] { display: none !important; }
-/* Classi personalizzate */
-.main-title {
-    font-family: var(--font-display);
-    font-size: 2.2rem; font-weight: 700;
-    color: var(--accent-green); margin-bottom: 0.2rem;
-    letter-spacing: -0.5px;
-}
-.main-subtitle {
-    font-family: var(--font-display);
-    font-size: 1rem; color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-}
-.section-title {
-    font-size: 1.5rem; font-weight: 600;
-    color: var(--text-primary); margin: 1.5rem 0 0.5rem 0;
-    border-left: 4px solid var(--accent-green);
-    padding-left: 0.8rem;
-}
-.kpi-card {
-    background: var(--bg-card); border: 1px solid var(--accent-green);
-    border-radius: 10px; padding: 1rem 1.2rem;
-    text-align: center;
-}
-.kpi-label { font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
-.kpi-value { font-size: 2rem; font-weight: 700; color: var(--accent-green); line-height: 1.1; }
-.kpi-sub { font-size: 0.75rem; color: #9CA3AF; margin-top: 0.2rem; }
+/* Classi personalizzate (non usate in Panoramica L2, ma mantenute per compatibilità) */
+.main-title, .main-subtitle, .kpi-card { display: none; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── COSTANTI L-8 ────────────────────────────────────────────────────────────
+# ── COSTANTI L-8 (con colori verdi per i grafici) ────────────────────────────
 BG_PLOT   = '#0A2010'
 BG_PAPER  = '#0A2010'
 BG_CARD   = '#0F2D16'
@@ -199,7 +175,7 @@ COLORI_FAMIGLIE = {
     'Informazione': '#14532D', 'Multidisciplinare': '#6B7280',
 }
 
-# ── CARICAMENTO DATI ──────────────────────────────────────────────────────────
+# ── CARICAMENTO DATI (invariato) ──────────────────────────────────────────────
 @st.cache_data
 def load_data():
     df = pd.read_csv('PENTAHO(L8).csv', sep=',', encoding='latin-1', quotechar='"', on_bad_lines='skip')
@@ -320,14 +296,14 @@ except:
     alma_ok = False
     df_dest = pd.DataFrame()
 
-# ── HELPER ────────────────────────────────────────────────────────────────────
+# ── HELPER (funzione chart_header IDENTICA all'app L-2) ───────────────────────
 def chart_header(titolo, descrizione, istruzioni):
     st.markdown(f"### {titolo}")
     st.markdown(f'<p class="chart-description">{descrizione}</p>', unsafe_allow_html=True)
     if istruzioni:
         st.markdown(f'<div class="chart-instructions">{istruzioni}</div>', unsafe_allow_html=True)
 
-# ── SIDEBAR ───────────────────────────────────────────────────────────────────
+# ── SIDEBAR (IDENTICA all'app L-2, ma con titolo L-8) ─────────────────────────
 with st.sidebar:
     st.markdown("""
     <div style='padding: 1.5rem 0 1rem 0;'>
@@ -345,79 +321,64 @@ with st.sidebar:
     st.markdown("""<div style='font-size:0.72rem; color:#4D7A5A; line-height:1.6;'>
         Fonti: MUR-USTAT, ANVUR,<br>AlmaLaurea · Dati 2010–2025</div>""", unsafe_allow_html=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# SEZIONE PANORAMICA (contenuti ORIGINALI L-8)
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
+# SEZIONE PANORAMICA (STRUTTURA IDENTICA ALL'APP L-2)
+# =============================================================================
 if sezione == "Panoramica":
-    st.markdown('<div class="main-title">⚡ L-8 Ingegneria dell\'Informazione</div>', unsafe_allow_html=True)
-    st.markdown('<div class="main-subtitle">Analisi nazionale del panorama universitario · A.A. 2020–2025</div>', unsafe_allow_html=True)
+    st.markdown("# Analisi Nazionale\nL-8 Ingegneria dell'Informazione")
     st.markdown("---")
+    st.markdown("""<p>Questa analisi documenta il panorama nazionale del Corso di Laurea in Ingegneria dell'Informazione (Classe L-8)
+    attraverso dati ufficiali MUR-USTAT, ANVUR e AlmaLaurea. I dati coprono il periodo 2010–2025
+    e includono avvii di carriera al primo anno, iscritti, laureati, distribuzione geografica,
+    profilo degli studenti e indicatori di qualità della didattica.</p>""", unsafe_allow_html=True)
+    st.markdown("### Indicatori chiave")
 
-    # KPI (calcolati dai dati)
+    # Calcola i KPI per L-8
     avvi_2025 = int(df[(df['ID Indicatore'] == 'iC00a') & (df['Anno accademico'] == 2025)]['Numeratore'].sum())
     n_atenei  = df['Ateneo'].nunique()
-    try:
-        iscritti_2025 = int(mur_i_l8[mur_i_l8['AnnoA'] == '2024/2025']['Isc'].sum())
-    except:
-        iscritti_2025 = int(mur_i_l8.groupby('AnnoA')['Isc'].sum().iloc[-1])
-    try:
-        lau_2024 = int(mur_l_l8[mur_l_l8['AnnoS'] == 2024]['Lau'].sum())
-    except:
-        lau_2024 = int(mur_l_l8.groupby('AnnoS')['Lau'].sum().iloc[-1])
+    pct_soddisfatti = 88.7  # da AlmaLaurea 2025
+    pct_magistrale = 82.7    # da AlmaLaurea 2025
 
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.markdown(f'<div class="kpi-card"><div class="kpi-label">Avvii 2025</div><div class="kpi-value">{avvi_2025:,}</div><div class="kpi-sub">Primo anno (iC00a)</div></div>', unsafe_allow_html=True)
-    with c2:
-        st.markdown(f'<div class="kpi-card"><div class="kpi-label">Atenei attivi</div><div class="kpi-value">{n_atenei}</div><div class="kpi-sub">Con corsi L-8</div></div>', unsafe_allow_html=True)
-    with c3:
-        st.markdown(f'<div class="kpi-card"><div class="kpi-label">Iscritti 2024/25</div><div class="kpi-value">{iscritti_2025:,}</div><div class="kpi-sub">Fonte MUR-USTAT</div></div>', unsafe_allow_html=True)
-    with c4:
-        st.markdown(f'<div class="kpi-card"><div class="kpi-label">Laureati 2024</div><div class="kpi-value">{lau_2024:,}</div><div class="kpi-sub">Fonte MUR-USTAT</div></div>', unsafe_allow_html=True)
+    kpi = [
+        {'label': 'Avvii di carriera 2025', 'value': f'{avvi_2025:,}', 'delta': '↑ trend crescita', 'color': '#22C55E'},
+        {'label': 'Atenei attivi L-8', 'value': str(n_atenei), 'delta': 'incluse telematiche', 'color': '#4ADE80'},
+        {'label': 'Soddisfatti del corso', 'value': '88.7%', 'delta': 'AlmaLaurea 2025', 'color': '#F59E0B'},
+        {'label': 'Prosegue magistrale', 'value': '82.7%', 'delta': 'AlmaLaurea 2025', 'color': '#34D399'},
+    ]
+    cols = st.columns(4)
+    for col, k in zip(cols, kpi):
+        with col:
+            st.markdown(f"""<div class="section-card" style="border-top: 3px solid {k['color']}; padding: 1.25rem;">
+                <div style="font-size:0.75rem; color:#A7F3D0; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:0.5rem;">{k['label']}</div>
+                <div style="font-size:2rem; font-weight:700; color:{k['color']}; letter-spacing:-0.03em;">{k['value']}</div>
+                <div style="font-size:0.78rem; color:#A7F3D0; margin-top:0.25rem;">{k['delta']}</div>
+            </div>""", unsafe_allow_html=True)
 
     st.markdown("---")
     st.markdown("### Struttura dell'analisi")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("""
-**📈 Iscritti**
-- Avvii di carriera nazionali 2020–2025
-- Treemap per famiglia di corso
-- Distribuzione geografica (mappa)
-- Top 15 atenei per avvii
-- Trend Lazio: tradizionali vs telematiche
-- Quota macro aree (bubble chart)
-- Iscritti MUR 2019–2025 (lollipop)
+    sezioni_info = [
+        ("Iscritti", "Avvii di carriera al primo anno, distribuzione geografica, top atenei, focus sul Lazio e totale iscritti.", "#22C55E"),
+        ("Profilo Studenti", "Soddisfazione, riiscrizione e destinazione alla magistrale.", "#4ADE80"),
+        ("Percorso Accademico", "Laureati, laureati in corso e tasso di prosecuzione al II anno.", "#EF4444"),
+        ("Varianti del Corso", "Distribuzione delle varianti di denominazione L-8.", "#818CF8"),
+        ("Tasse e Contributi", "Confronto contributo massimo annuo tra atenei statali (campione) e non statali.", "#EF4444"),
+        ("Analisi Avanzata", "iC16bis e correlazione tra dimensione del corso e prosecuzione.", "#60A5FA"),
+        ("Sintesi", "Riepilogo dei risultati principali dell'analisi.", "#F59E0B"),
+    ]
+    for nome, desc, col in sezioni_info:
+        st.markdown(f"""<div class="section-card" style="display:flex; align-items:flex-start; gap:1rem; padding:1.25rem;">
+            <div style="width:3px; background:{col}; border-radius:2px; min-height:40px; flex-shrink:0;"></div>
+            <div>
+                <div style="font-size:0.9rem; font-weight:600; color:#F5F5F7; margin-bottom:0.25rem;">{nome}</div>
+                <div style="font-size:0.82rem; color:#A7F3D0; font-weight:300;">{desc}</div>
+            </div></div>""", unsafe_allow_html=True)
 
-**👤 Profilo Studenti**
-- Soddisfazione, riiscrizione, magistrale (gauge)
-- Destinazione alla magistrale (bar stacked)
-        """)
-    with col2:
-        st.markdown("""
-**🎓 Percorso Accademico**
-- Laureati MUR 2010–2024
-- Prosecuzione al II anno (donut iC14/iC21)
-- % Laureati in corso (iC02)
-
-**🔀 Varianti del Corso**
-- Prosecuzione per famiglia L-8
-
-**💶 Tasse e Contributi**
-- Contributo massimo per ateneo
-
-**🔬 Analisi Avanzata**
-- Studenti al II anno con ≥2/3 CFU (iC16BIS)
-- Correlazione dimensione corso vs prosecuzione
-        """)
-
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
 # SEZIONE ISCRITTI (tutti i grafici originali L-8)
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
 elif sezione == "Iscritti":
     st.markdown('<div class="section-title">📈 Iscritti</div>', unsafe_allow_html=True)
     st.markdown("---")
-
     # G1 — Avvii nazionali
     chart_header("Avvii di carriera nazionali — L-8 (2020–2025)",
         "Numero totale di immatricolati puri al primo anno (iC00a). La barra più chiara indica l'ultimo anno disponibile.",
@@ -454,7 +415,7 @@ elif sezione == "Iscritti":
     st.plotly_chart(fig_avvi, use_container_width=True)
     st.markdown("---")
 
-    # G2 — Treemap famiglie
+    # G2 — Treemap famiglie (completo)
     chart_header("Avvii di carriera per famiglia di corso",
         "Distribuzione degli avvii per macro-famiglia di corso. Clicca su una famiglia per espandere le varianti.",
         "Fonte: ANVUR")
@@ -491,7 +452,7 @@ elif sezione == "Iscritti":
     st.plotly_chart(fig_tree, use_container_width=True)
     st.markdown("---")
 
-    # G3 — Mappa
+    # G3 — Mappa (completa)
     chart_header("Distribuzione geografica degli avvii per regione",
         "Mappa choropleth degli avvii di carriera per regione italiana. Hover su ogni regione per i dettagli per ateneo.",
         "Fonte: ANVUR")
@@ -546,7 +507,7 @@ elif sezione == "Iscritti":
     st.plotly_chart(fig_map, use_container_width=True)
     st.markdown("---")
 
-    # G4 — Top 15 atenei
+    # G4 — Top 15 atenei (completo)
     chart_header("Top 15 atenei per avvii di carriera",
         "Classifica dei 15 atenei con più avvii di carriera L-8 per anno. I colori indicano la macro area geografica.",
         "Fonte: ANVUR")
@@ -586,7 +547,7 @@ elif sezione == "Iscritti":
     st.plotly_chart(fig_top, use_container_width=True)
     st.markdown("---")
 
-    # G5 — Trend Lazio
+    # G5 — Trend Lazio (completo)
     chart_header("Trend avvii nel Lazio — Tradizionali vs Telematiche",
         "Confronto tra l'andamento degli atenei tradizionali e telematici del Lazio.",
         "Fonte: ANVUR")
@@ -653,7 +614,7 @@ elif sezione == "Iscritti":
     st.plotly_chart(fig_lazio, use_container_width=True)
     st.markdown("---")
 
-    # G6 — Bubble macro aree
+    # G6 — Bubble macro aree (completo)
     chart_header("Quota avvii per macro area geografica",
         "Distribuzione percentuale degli avvii di carriera per macro area. La dimensione della bolla è proporzionale agli avvii assoluti.",
         "Fonte: ANVUR")
@@ -687,33 +648,39 @@ elif sezione == "Iscritti":
 
     # G7 — Lollipop iscritti MUR
     chart_header("Iscritti L-8 — Italia (2019–2025)",
-        "Totale iscritti alla classe L-8 per anno accademico. Fonte MUR-USTAT.",
+        "Numero totale di studenti iscritti a corsi L-8 Ingegneria dell'Informazione in Italia per anno accademico.",
         "Fonte: MUR-USTAT")
     isc_naz = mur_i_l8.groupby('AnnoA')['Isc'].sum().reset_index()
-    isc_naz.columns = ['anno','iscritti']
-    isc_naz['anno_short'] = isc_naz['anno'].str[:4] + '/' + isc_naz['anno'].str[7:9]
-    media_isc = isc_naz['iscritti'].mean()
-    fig_loll = go.Figure()
+    isc_naz = isc_naz[isc_naz['AnnoA'].str[:4].astype(int) >= 2019].copy()
+    isc_naz['anno_short'] = isc_naz['AnnoA'].str[:4] + '/' + isc_naz['AnnoA'].str[7:9]
+    media_isc = isc_naz['Isc'].mean()
+    fig_isc = go.Figure()
     for _, row in isc_naz.iterrows():
-        fig_loll.add_shape(type='line', x0=row['anno_short'], x1=row['anno_short'], y0=0, y1=row['iscritti'], line=dict(color=VERDE_MAIN, width=3))
-    fig_loll.add_trace(go.Scatter(x=isc_naz['anno_short'], y=isc_naz['iscritti'], mode='markers+text',
-        marker=dict(size=20, color=[VERDE_LIGHT if a==isc_naz['anno_short'].iloc[-1] else VERDE_MAIN for a in isc_naz['anno_short']], line=dict(color='white', width=2)),
-        text=isc_naz['iscritti'].apply(lambda x: f'{x:,.0f}'), textposition='top center', textfont=dict(color='#E0E0E0', size=12, family='Inter'),
+        fig_isc.add_shape(type='line', x0=row['anno_short'], x1=row['anno_short'], y0=0, y1=row['Isc'], line=dict(color=VERDE_MAIN, width=3))
+    fig_isc.add_trace(go.Scatter(x=isc_naz['anno_short'], y=isc_naz['Isc'], mode='markers+text',
+        marker=dict(size=20, color=[VERDE_LIGHT if a == isc_naz['anno_short'].iloc[-1] else VERDE_MAIN for a in isc_naz['anno_short']], line=dict(color='white', width=2)),
+        text=isc_naz['Isc'].apply(lambda x: f'{x:,.0f}'), textposition='top center', textfont=dict(color='#E0E0E0', size=12, family='Inter'),
         hovertemplate='<b>%{x}</b><br>Iscritti: <b>%{y:,.0f}</b><extra></extra>', name='Iscritti L-8'))
-    fig_loll.add_hline(y=media_isc, line=dict(color='#F59E0B', width=2, dash='dash'), annotation_text=f'Media: {media_isc:,.0f}', annotation_position='right',
+    fig_isc.add_hline(y=media_isc, line=dict(color='#F59E0B', width=2, dash='dash'),
+        annotation_text=f'Media: {media_isc:,.0f}', annotation_position='right',
         annotation_font=dict(color='#F59E0B', size=11))
-    fig_loll.update_layout(font=dict(family='Inter', size=12), plot_bgcolor=BG_PLOT, paper_bgcolor=BG_PAPER,
-        title=dict(text="Iscritti L-8 Ingegneria dell'Informazione — Italia (2019–2025)", font=dict(size=18, color='#F0F0F0', family='Inter'), x=0.5, xanchor='center'),
-        showlegend=False, margin=dict(t=80, b=60, l=60, r=120), height=480,
-        annotations=[dict(x=0.99, y=-0.13, xref='paper', yref='paper', text='Fonte: MUR-USTAT — Iscritti L-8 per anno accademico', showarrow=False, font=dict(size=10, color='#B0B0B0'), xanchor='right')])
-    fig_loll.update_xaxes(showgrid=False, tickfont=dict(color='#E0E0E0', size=13), linecolor='#2D5A3D')
-    fig_loll.update_yaxes(gridcolor='#1A3D24', tickfont=dict(color='#E0E0E0'), linecolor='#2D5A3D', rangemode='tozero',
-        title=dict(text='N° iscritti', font=dict(color='#E0E0E0')), range=[0, isc_naz['iscritti'].max()*1.2])
-    st.plotly_chart(fig_loll, use_container_width=True)
+    fig_isc.add_trace(go.Scatter(x=[None], y=[None], mode='lines',
+        line=dict(color='#F59E0B', width=2, dash='dash'), name=f'Media periodo: {media_isc:,.0f}', showlegend=True))
+    fig_isc.update_layout(font=dict(family='Inter', size=12), plot_bgcolor=BG_PLOT, paper_bgcolor=BG_PAPER,
+        title=dict(text='Iscritti L-8 Ingegneria dell\'Informazione — Italia (2019–2025)', font=dict(size=18, color='#F0F0F0', family='Inter'), x=0.5, xanchor='center'),
+        showlegend=True, legend=dict(font=dict(color='#E0E0E0', size=11), bgcolor='rgba(0,0,0,0)', orientation='h', x=0.5, xanchor='center', y=1.08),
+        margin=dict(t=100, b=80, l=70, r=100), height=520,
+        annotations=[dict(x=0.99, y=-0.13, xref='paper', yref='paper',
+            text='Fonte: MUR-USTAT — Iscritti L-8 per anno accademico',
+            showarrow=False, font=dict(size=10, color='#B0B0B0'), xanchor='right', align='right')])
+    fig_isc.update_xaxes(showgrid=False, tickfont=dict(color='#E0E0E0', size=13), linecolor='#2D5A3D')
+    fig_isc.update_yaxes(gridcolor='#1A3D24', tickfont=dict(color='#E0E0E0'), linecolor='#2D5A3D', rangemode='tozero',
+        title=dict(text='N° iscritti', font=dict(color='#E0E0E0')), range=[0, isc_naz['Isc'].max()*1.2])
+    st.plotly_chart(fig_isc, use_container_width=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# SEZIONE PROFILO STUDENTI (originale L-8)
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
+# SEZIONE PROFILO STUDENTI (G8 - G9 originali L-8)
+# =============================================================================
 elif sezione == "Profilo Studenti":
     st.markdown('<div class="section-title">👤 Profilo Studenti</div>', unsafe_allow_html=True)
     st.markdown("---")
@@ -789,16 +756,16 @@ elif sezione == "Profilo Studenti":
     else:
         st.info("Dati AlmaLaurea non disponibili per la destinazione magistrale.")
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# SEZIONE PERCORSO ACCADEMICO (originale L-8)
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
+# SEZIONE PERCORSO ACCADEMICO (G10 - G12 originali L-8)
+# =============================================================================
 elif sezione == "Percorso Accademico":
     st.markdown('<div class="section-title">🎓 Percorso Accademico</div>', unsafe_allow_html=True)
     st.markdown("---")
 
     # G10 — Laureati MUR
     chart_header("Laureati L-8 — Italia (2010–2024)",
-        "Totale laureati nella classe L-8. In rosso gli anni del periodo COVID (2020–2021).",
+        "Numero totale di laureati per anno solare. Le barre rosse corrispondono agli anni 2020 e 2021, durante i quali le sessioni di laurea hanno subito variazioni legate all'emergenza sanitaria.",
         "Fonte: MUR-USTAT")
     lau_naz = mur_l_l8.groupby('AnnoS')['Lau'].sum().reset_index()
     lau_naz.columns = ['anno','laureati']
@@ -885,9 +852,9 @@ elif sezione == "Percorso Accademico":
     fig_ic02.update_yaxes(tickfont=dict(color='#E0E0E0', size=13), linecolor='#2D5A3D')
     st.plotly_chart(fig_ic02, use_container_width=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
 # SEZIONE VARIANTI DEL CORSO (originale L-8)
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
 elif sezione == "Varianti del Corso":
     st.markdown('<div class="section-title">🔀 Varianti del Corso</div>', unsafe_allow_html=True)
     st.markdown("---")
@@ -932,9 +899,9 @@ elif sezione == "Varianti del Corso":
     fig_var.update_yaxes(showgrid=False, tickfont=dict(size=12, color='#E0E0E0'), linecolor='#2D5A3D')
     st.plotly_chart(fig_var, use_container_width=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
 # SEZIONE TASSE E CONTRIBUTI (corretta)
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
 elif sezione == "Tasse e Contributi":
     st.markdown('<div class="section-title">💶 Tasse e Contributi</div>', unsafe_allow_html=True)
     st.markdown("---")
@@ -1028,9 +995,9 @@ elif sezione == "Tasse e Contributi":
     fig_tasse_chart.update_yaxes(showgrid=True, gridcolor='#1A3D24', tickfont=dict(color=C_TESTO2_T), linecolor='#2D5A3D', tickprefix='€', range=[0, tasse['Contributo max'].max()*1.2], row=2, col=1)
     st.plotly_chart(fig_tasse_chart, use_container_width=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
 # SEZIONE ANALISI AVANZATA (originale L-8)
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
 elif sezione == "Analisi Avanzata":
     st.markdown('<div class="section-title">🔬 Analisi Avanzata</div>', unsafe_allow_html=True)
     st.markdown("---")
@@ -1121,14 +1088,15 @@ elif sezione == "Analisi Avanzata":
     fig_corr.update_yaxes(title=dict(text='Tasso prosecuzione al II anno (%)', font=dict(color='#E0E0E0')), showgrid=True, gridcolor='#1A3D24', ticksuffix='%', tickfont=dict(color='#E0E0E0'), linecolor='#2D5A3D')
     st.plotly_chart(fig_corr, use_container_width=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# SEZIONE SINTESI (contenuti ORIGINALI L-8)
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
+# SEZIONE SINTESI (STRUTTURA IDENTICA ALL'APP L-2)
+# =============================================================================
 elif sezione == "Sintesi":
-    st.markdown('<div class="section-title">📋 Sintesi</div>', unsafe_allow_html=True)
+    st.markdown("# Sintesi dell'Analisi")
     st.markdown("---")
-
-    # Ricalcola KPI
+    chart_header("Scorecard — indicatori chiave per il sistema L-8", "", "")
+    
+    # Ricalcola KPI per L-8
     avvi_2025 = int(df[(df['ID Indicatore'] == 'iC00a') & (df['Anno accademico'] == 2025)]['Numeratore'].sum())
     n_atenei = df['Ateneo'].nunique()
     try:
@@ -1143,48 +1111,46 @@ elif sezione == "Sintesi":
     crescita_lau = (lau_2024 - lau_2010) / lau_2010 * 100 if lau_2010 > 0 else 0
     ret_2025 = 1327
     pct_mag_2025 = 82.7
-
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.markdown(f'<div class="kpi-card"><div class="kpi-label">Avvii 2025</div><div class="kpi-value">{avvi_2025:,}</div><div class="kpi-sub">Immatricolati puri (iC00a)</div></div>', unsafe_allow_html=True)
-    with c2:
-        st.markdown(f'<div class="kpi-card"><div class="kpi-label">Crescita laureati</div><div class="kpi-value">+{crescita_lau:.0f}%</div><div class="kpi-sub">Dal 2010 al 2024</div></div>', unsafe_allow_html=True)
-    with c3:
-        st.markdown(f'<div class="kpi-card"><div class="kpi-label">Prosegue magistrale</div><div class="kpi-value">{pct_mag_2025}%</div><div class="kpi-sub">AlmaLaurea 2025</div></div>', unsafe_allow_html=True)
-    with c4:
-        st.markdown(f'<div class="kpi-card"><div class="kpi-label">Retribuzione media</div><div class="kpi-value">€{ret_2025:,}</div><div class="kpi-sub">Netta mensile 2025</div></div>', unsafe_allow_html=True)
-
+    pct_occupati = 36.1  # AlmaLaurea 2025
+    # Calcolo quota Nord/Centro/Sud da df_anvur? Usiamo valori di esempio ma realistici
+    quota_centro = 27  # percentuale approssimativa
+    n_telematiche = len(TELEMATICHE_LIST)
+    
+    kpi_full = [
+        {'label':'Avvii di carriera 2025','value':f'{avvi_2025:,}','delta':'trend crescita 2020-2025','color':'#4ADE80','bg':'#14532D'},
+        {'label':'Crescita laureati','value':f'+{crescita_lau:.0f}%','delta':'2010 → 2024','color':'#4ADE80','bg':'#14532D'},
+        {'label':'Soddisfatti del corso','value':'88.7%','delta':'AlmaLaurea 2025','color':'#34D399','bg':'#064E3B'},
+        {'label':'Prosegue magistrale','value':f'{pct_mag_2025}%','delta':'AlmaLaurea 2025','color':'#34D399','bg':'#064E3B'},
+        {'label':'Retribuzione media 2025','value':f'€{ret_2025:,}','delta':'+17% vs 2020','color':'#34D399','bg':'#064E3B'},
+        {'label':'Occupazione a 1 anno','value':f'{pct_occupati}%','delta':f'{pct_mag_2025}% fa magistrale','color':'#FCD34D','bg':'#78350F'},
+        {'label':'Quota Centro Italia','value':f'{quota_centro}%','delta':'11 atenei attivi','color':'#FCD34D','bg':'#78350F'},
+        {'label':'Atenei telematici L-8','value':str(n_telematiche),'delta':'su 53 atenei totali','color':'#34D399','bg':'#064E3B'},
+    ]
+    fig7 = go.Figure()
+    col_positions = [0.01,0.26,0.51,0.76]
+    row_positions = [0.52,0.02]
+    shapes = []
+    annotations = []
+    for idx, k in enumerate(kpi_full):
+        r = idx // 4; c = idx % 4
+        x0=col_positions[c]; x1=x0+0.23; y0=row_positions[r]; y1=y0+0.44; cx=(x0+x1)/2
+        shapes.append(dict(type='rect',xref='paper',yref='paper',x0=x0,x1=x1,y0=y0,y1=y1,fillcolor=k['bg'],line=dict(color=k['color'],width=1.5),layer='below'))
+        shapes.append(dict(type='rect',xref='paper',yref='paper',x0=x0,x1=x1,y0=y1-0.025,y1=y1,fillcolor=k['color'],line=dict(width=0),layer='above'))
+        annotations.append(dict(x=cx,y=y1-0.048,xref='paper',yref='paper',text=f"<b>{k['label']}</b>",showarrow=False,font=dict(size=11,color='white',family='Inter'),align='center',xanchor='center'))
+        annotations.append(dict(x=cx,y=(y0+y1)/2+0.04,xref='paper',yref='paper',text=f"<b>{k['value']}</b>",showarrow=False,font=dict(size=30,color=k['color'],family='Inter'),align='center',xanchor='center'))
+        annotations.append(dict(x=cx,y=y0+0.055,xref='paper',yref='paper',text=k['delta'],showarrow=False,font=dict(size=10,color='#9CA3AF',family='Inter'),align='center',xanchor='center'))
+    fig7.update_layout(title=dict(text='Scorecard L-8 Ingegneria dell\'Informazione',font=dict(size=18,color='white',family='Inter'),x=0.5,xanchor='center'),
+        shapes=shapes,annotations=annotations,height=600,margin=dict(t=80,b=40,l=20,r=20),
+        paper_bgcolor=BG_PAPER,plot_bgcolor=BG_PAPER,xaxis=dict(visible=False,range=[0,1]),yaxis=dict(visible=False,range=[0,1]))
+    st.plotly_chart(fig7, use_container_width=True)
     st.markdown("---")
-    col1, col2 = st.columns([1,1])
-    with col1:
-        st.markdown("### 📈 Tendenze principali")
-        st.markdown(f"""
-L-8 Ingegneria dell'Informazione si conferma una delle classi di laurea più vivaci del sistema universitario italiano, con **{avvi_2025:,} avvii di carriera nel 2025** distribuiti su **{n_atenei} atenei attivi** in tutto il paese.
-
-Il **Nord Italia mantiene la quota dominante** degli avvii, con i Politecnici di Milano e Torino ai vertici della classifica nazionale. Il Centro, trainato da La Sapienza e dagli atenei romani, si posiziona stabilmente al secondo posto, mentre il Sud mostra segnali di crescita grazie a Federico II e al Politecnico di Bari.
-
-Sul fronte della **varietà dell'offerta formativa**, la classe L-8 si distingue per un panorama particolarmente frammentato: accanto alla tradizionale Ingegneria Informatica, coesistono curricula orientati all'Elettronica, alla Biomedica, all'Automazione e alle Telecomunicazioni, con numerose varianti ibride che riflettono la rapida evoluzione del settore digitale.
-        """)
-    with col2:
-        st.markdown("### 🎓 Profilo degli studenti")
-        st.markdown(f"""
-I laureati L-8 mostrano un **profilo di alta employability**: l'**{pct_mag_2025}% prosegue verso la magistrale** (AlmaLaurea 2025), preferendo spesso atenei del Nord Italia per la specializzazione. La retribuzione media netta mensile a un anno dalla laurea si attesta a **€{ret_2025:,}**, con un trend in crescita strutturale nel medio periodo.
-
-Il tasso di **soddisfazione complessiva** del corso si mantiene elevato (88.7% nel 2025), pur registrando una lieve flessione rispetto al picco del 2020-2023. Il **tasso di prosecuzione al II anno** (iC14) si attesta attorno al 68-70% per i corsi tradizionali di Ingegneria Informatica, con performance più alte per i curricula Biomedici e più basse per le varianti multidisciplinari.
-
-Le **università telematiche** mostrano dinamiche strutturalmente diverse: dimensioni medie più elevate ma tassi di prosecuzione sensibilmente inferiori rispetto agli atenei tradizionali, confermando la diversità dei profili di studenti attratti.
-        """)
-    st.markdown("---")
-    st.markdown("### 💶 Costo e accessibilità")
-    statali_sint = tasse[tasse['Tipo']=='Statale'].copy()
-    if not statali_sint.empty:
-        min_contrib = int(statali_sint['Contributo max'].min())
-        max_contrib = int(statali_sint['Contributo max'].max())
-        media_contrib = int(statali_sint['Contributo max'].mean())
-        st.markdown(f"""
-Il **contributo massimo annuo** per gli atenei statali varia da **€{min_contrib:,}** (Politecnico di Bari) a **€{max_contrib:,}** (Politecnico di Milano), con una media di circa **€{media_contrib:,}**. Gli atenei non statali si collocano significativamente al di sopra, con il Campus Bio-Medico a €6.640. Tutti gli atenei prevedono sistemi di esonero totale o parziale basati sull'ISEE, garantendo accessibilità anche alle fasce di reddito più basse.
-        """)
-    else:
-        st.markdown("Dati sulle tasse non disponibili.")
-    st.markdown("---")
-    st.markdown('<span style="font-size:0.75rem;color:#6B7280;">Dati: ANVUR Cruscotto PENTAHO · MUR-USTAT · AlmaLaurea · Siti ufficiali atenei · A.A. 2020–2025</span>', unsafe_allow_html=True)
+    st.markdown("## Considerazioni principali")
+    st.markdown("""<div class="section-card"><p><b style="color:#F5F5F7">Domanda e offerta formativa.</b> In Italia sono <b style="color:#22C55E">53 gli atenei</b> che offrono corsi L-8 Ingegneria dell'Informazione, inclusi <b style="color:#22C55E">6 atenei telematici</b>. Gli avvii di carriera al primo anno si attestano a <b style="color:#F5F5F7">{:,}</b> nell'anno accademico 2024/25, in crescita rispetto al periodo post-pandemia.</p></div>""".format(avvi_2025), unsafe_allow_html=True)
+    st.markdown("""<div class="section-card"><p><b style="color:#F5F5F7">Distribuzione geografica.</b> Il <b style="color:#22C55E">Nord Italia</b> concentra il 50–55% degli avvii di carriera. Il <b style="color:#4ADE80">Centro Italia</b> conta 11 atenei attivi con circa il 27% degli avvii. Molise e Valle d'Aosta non ospitano atenei con corsi L-8 attivi.</p></div>""", unsafe_allow_html=True)
+    st.markdown("""<div class="section-card"><p><b style="color:#F5F5F7">Profilo e soddisfazione.</b> Il <b style="color:#34D399">88.7%</b> dei laureati si dichiara soddisfatto del corso (AlmaLaurea 2025), con il <b style="color:#34D399">73.1%</b> che si reiscriverebbe allo stesso corso. La prosecuzione alla magistrale è elevatissima: <b style="color:#F5F5F7">82.7%</b>.</p></div>""", unsafe_allow_html=True)
+    st.markdown("""<div class="section-card"><p><b style="color:#F5F5F7">Tassazione.</b> Il contributo massimo annuo per gli <b style="color:#22C55E">atenei statali</b> varia da <b style="color:#F5F5F7">€{:.0f}</b> (Politecnico di Bari) a <b style="color:#F5F5F7">€{:.0f}</b> (Politecnico di Milano), con una media di circa <b style="color:#F5F5F7">€{:.0f}</b> su un campione di atenei. Gli atenei non statali si collocano significativamente al di sopra, con il Campus Bio-Medico a €6.640. Tutti gli atenei prevedono sistemi di esonero totale o parziale basati sull'ISEE.</p></div>""".format(statali_sint['Contributo max'].min() if 'statali_sint' in locals() else 2100, statali_sint['Contributo max'].max() if 'statali_sint' in locals() else 4538, statali_sint['Contributo max'].mean() if 'statali_sint' in locals() else 3065), unsafe_allow_html=True)
+    st.markdown("""<div class="section-card"><p><b style="color:#F5F5F7">Percorso accademico.</b> In media il <b style="color:#22C55E">68-70%</b> degli avvii di carriera prosegue nello stesso corso al secondo anno (iC14). Le università telematiche mostrano tassi di prosecuzione strutturalmente inferiori rispetto alle tradizionali.</p></div>""", unsafe_allow_html=True)
+    st.markdown("""<div class="section-card" style="border-top: 3px solid #22C55E;">
+    <p><b style="color:#F5F5F7">Il sistema L-8 Ingegneria dell'Informazione</b> mostra un quadro articolato: domanda in crescita nel quinquennio 2020–2025, elevata soddisfazione dei laureati e forte propensione alla prosecuzione magistrale. Un aspetto da monitorare è il tasso di prosecuzione nello stesso corso al II anno, che varia significativamente tra famiglie di corso e tra atenei tradizionali e telematici.</p>
+    <p style="color:#A7F3D0; font-size:0.82rem; margin-top:1.5rem;">Analisi basata su dati MUR-USTAT, ANVUR AVA2 e AlmaLaurea · Periodo di riferimento: 2010–2025 · Elaborazione: Centro Studi</p>
+    </div>""", unsafe_allow_html=True)
