@@ -7,7 +7,7 @@ from scipy import stats
 import warnings
 warnings.filterwarnings('ignore')
 
-# ── CONFIGURAZIONE PAGINA ─────────────────────────────────────────────────────
+# ── CONFIGURAZIONE PAGINA (come L2, ma con icona L8) ─────────────────────────
 st.set_page_config(
     page_title="L-8 Ingegneria dell'Informazione",
     page_icon="⚡",
@@ -15,7 +15,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ── CSS (stile L2 convertito in verde) ────────────────────────────────────────
+# ── CSS (IDENTICO all'app L-2, ma con colori VERDI) ─────────────────────────
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
@@ -57,7 +57,7 @@ hr { border-color: var(--border) !important; margin: 2rem 0 !important; }
 #MainMenu { visibility: hidden; }
 footer { visibility: hidden; }
 [data-testid="stToolbarActions"] { display: none !important; }
-/* Classi personalizzate */
+/* Classi personalizzate per i KPI e titoli di sezione */
 .main-title {
     font-family: var(--font-display);
     font-size: 2.2rem; font-weight: 700;
@@ -86,7 +86,7 @@ footer { visibility: hidden; }
 </style>
 """, unsafe_allow_html=True)
 
-# ── COSTANTI (allineate ai nuovi colori) ──────────────────────────────────────
+# ── COSTANTI L-8 (con colori verdi per i grafici) ────────────────────────────
 BG_PLOT   = '#0A2010'
 BG_PAPER  = '#0A2010'
 BG_CARD   = '#0F2D16'
@@ -199,7 +199,7 @@ COLORI_FAMIGLIE = {
     'Informazione': '#14532D', 'Multidisciplinare': '#6B7280',
 }
 
-# ── CARICAMENTO DATI ──────────────────────────────────────────────────────────
+# ── CARICAMENTO DATI (uguale al tuo originale) ────────────────────────────────
 @st.cache_data
 def load_data():
     df = pd.read_csv('PENTAHO(L8).csv', sep=',', encoding='latin-1', quotechar='"', on_bad_lines='skip')
@@ -320,15 +320,14 @@ except:
     alma_ok = False
     df_dest = pd.DataFrame()
 
-# ── HELPER ────────────────────────────────────────────────────────────────────
-def chart_header(titolo, descrizione='', istruzioni=''):
+# ── HELPER (funzione chart_header IDENTICA all'app L-2) ───────────────────────
+def chart_header(titolo, descrizione, istruzioni):
     st.markdown(f"### {titolo}")
-    if descrizione:
-        st.markdown(f'<p class="chart-description">{descrizione}</p>', unsafe_allow_html=True)
+    st.markdown(f'<p class="chart-description">{descrizione}</p>', unsafe_allow_html=True)
     if istruzioni:
         st.markdown(f'<div class="chart-instructions">{istruzioni}</div>', unsafe_allow_html=True)
 
-# ── SIDEBAR (come L2) ────────────────────────────────────────────────────────
+# ── SIDEBAR (IDENTICA all'app L-2, ma con titolo L-8) ─────────────────────────
 with st.sidebar:
     st.markdown("""
     <div style='padding: 1.5rem 0 1rem 0;'>
@@ -337,23 +336,18 @@ with st.sidebar:
     </div>
     """, unsafe_allow_html=True)
     st.markdown('<div class="sidebar-title">Sezioni</div>', unsafe_allow_html=True)
-    sezione = st.radio("", [
-        "Panoramica",
-        "Iscritti",
-        "Profilo Studenti",
-        "Percorso Accademico",
-        "Varianti del Corso",
-        "Tasse e Contributi",
-        "Analisi Avanzata",
-        "Sintesi",
+    sezione = st.radio(label="", options=[
+        "Panoramica", "Iscritti",
+        "Profilo Studenti", "Percorso Accademico",
+        "Varianti del Corso", "Tasse e Contributi", "Analisi Avanzata", "Sintesi",
     ], label_visibility="collapsed")
     st.markdown("---")
     st.markdown("""<div style='font-size:0.72rem; color:#4D7A5A; line-height:1.6;'>
         Fonti: MUR-USTAT, ANVUR,<br>AlmaLaurea · Dati 2010–2025</div>""", unsafe_allow_html=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# SEZIONE PANORAMICA
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
+# SEZIONE PANORAMICA (grafici L-8 originali, solo testo adattato)
+# =============================================================================
 if sezione == "Panoramica":
     st.markdown('<div class="main-title">⚡ L-8 Ingegneria dell\'Informazione</div>', unsafe_allow_html=True)
     st.markdown('<div class="main-subtitle">Analisi nazionale del panorama universitario · A.A. 2020–2025</div>', unsafe_allow_html=True)
@@ -416,9 +410,9 @@ if sezione == "Panoramica":
 - Correlazione dimensione corso vs prosecuzione
         """)
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# SEZIONE ISCRITTI (G1 - G7)
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
+# SEZIONE ISCRITTI (G1 - G7 originali, con stessa struttura dell'app L-2)
+# =============================================================================
 elif sezione == "Iscritti":
     st.markdown('<div class="section-title">📈 Iscritti</div>', unsafe_allow_html=True)
     st.markdown("---")
@@ -459,7 +453,7 @@ elif sezione == "Iscritti":
     st.plotly_chart(fig_avvi, use_container_width=True)
     st.markdown("---")
 
-    # G2 — Treemap famiglie
+    # G2 — Treemap famiglie (completo)
     chart_header("Avvii di carriera per famiglia di corso",
         "Distribuzione degli avvii per macro-famiglia di corso. Clicca su una famiglia per espandere le varianti.",
         "Fonte: ANVUR")
@@ -496,7 +490,7 @@ elif sezione == "Iscritti":
     st.plotly_chart(fig_tree, use_container_width=True)
     st.markdown("---")
 
-    # G3 — Mappa
+    # G3 — Mappa (completa)
     chart_header("Distribuzione geografica degli avvii per regione",
         "Mappa choropleth degli avvii di carriera per regione italiana. Hover su ogni regione per i dettagli per ateneo.",
         "Fonte: ANVUR")
@@ -551,7 +545,7 @@ elif sezione == "Iscritti":
     st.plotly_chart(fig_map, use_container_width=True)
     st.markdown("---")
 
-    # G4 — Top 15 atenei
+    # G4 — Top 15 atenei (completo)
     chart_header("Top 15 atenei per avvii di carriera",
         "Classifica dei 15 atenei con più avvii di carriera L-8 per anno. I colori indicano la macro area geografica.",
         "Fonte: ANVUR")
@@ -591,7 +585,7 @@ elif sezione == "Iscritti":
     st.plotly_chart(fig_top, use_container_width=True)
     st.markdown("---")
 
-    # G5 — Trend Lazio
+    # G5 — Trend Lazio (completo)
     chart_header("Trend avvii nel Lazio — Tradizionali vs Telematiche",
         "Confronto tra l'andamento degli atenei tradizionali e telematici del Lazio.",
         "Fonte: ANVUR")
@@ -658,7 +652,7 @@ elif sezione == "Iscritti":
     st.plotly_chart(fig_lazio, use_container_width=True)
     st.markdown("---")
 
-    # G6 — Bubble macro aree
+    # G6 — Bubble macro aree (completo)
     chart_header("Quota avvii per macro area geografica",
         "Distribuzione percentuale degli avvii di carriera per macro area. La dimensione della bolla è proporzionale agli avvii assoluti.",
         "Fonte: ANVUR")
@@ -690,7 +684,7 @@ elif sezione == "Iscritti":
     st.plotly_chart(fig_bubble, use_container_width=True)
     st.markdown("---")
 
-    # G7 — Lollipop iscritti MUR
+    # G7 — Lollipop iscritti MUR (completo)
     chart_header("Iscritti L-8 — Italia (2019–2025)",
         "Totale iscritti alla classe L-8 per anno accademico. Fonte MUR-USTAT.",
         "Fonte: MUR-USTAT")
@@ -716,14 +710,14 @@ elif sezione == "Iscritti":
         title=dict(text='N° iscritti', font=dict(color='#E0E0E0')), range=[0, isc_naz['iscritti'].max()*1.2])
     st.plotly_chart(fig_loll, use_container_width=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# SEZIONE PROFILO STUDENTI (G8 - G9)
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
+# SEZIONE PROFILO STUDENTI (G8 - G9 originali)
+# =============================================================================
 elif sezione == "Profilo Studenti":
     st.markdown('<div class="section-title">👤 Profilo Studenti</div>', unsafe_allow_html=True)
     st.markdown("---")
 
-    # G8 — Gauge
+    # G8 — Gauge (come originale)
     chart_header("Indicatori di soddisfazione e prospettive — Laureati L-8",
         "Confronto tra il 2025 e gli anni precedenti per tre indicatori chiave AlmaLaurea. Seleziona l'anno di riferimento.",
         "Fonte: AlmaLaurea")
@@ -761,7 +755,7 @@ elif sezione == "Profilo Studenti":
     st.plotly_chart(fig_gauge, use_container_width=True)
     st.markdown("---")
 
-    # G9 — Destinazione magistrale
+    # G9 — Destinazione magistrale (come originale)
     if alma_ok and not df_dest.empty:
         chart_header("Destinazione alla magistrale — Laureati L-8 (2020–2025)",
             "Dove si iscrivono alla magistrale i laureati L-8. Hover su 'Altro' per il dettaglio.",
@@ -794,9 +788,9 @@ elif sezione == "Profilo Studenti":
     else:
         st.info("Dati AlmaLaurea non disponibili per la destinazione magistrale.")
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# SEZIONE PERCORSO ACCADEMICO (G10 - G12)
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
+# SEZIONE PERCORSO ACCADEMICO (G10 - G12 originali)
+# =============================================================================
 elif sezione == "Percorso Accademico":
     st.markdown('<div class="section-title">🎓 Percorso Accademico</div>', unsafe_allow_html=True)
     st.markdown("---")
@@ -890,9 +884,9 @@ elif sezione == "Percorso Accademico":
     fig_ic02.update_yaxes(tickfont=dict(color='#E0E0E0', size=13), linecolor='#2D5A3D')
     st.plotly_chart(fig_ic02, use_container_width=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# SEZIONE VARIANTI DEL CORSO
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
+# SEZIONE VARIANTI DEL CORSO (originale)
+# =============================================================================
 elif sezione == "Varianti del Corso":
     st.markdown('<div class="section-title">🔀 Varianti del Corso</div>', unsafe_allow_html=True)
     st.markdown("---")
@@ -937,9 +931,9 @@ elif sezione == "Varianti del Corso":
     fig_var.update_yaxes(showgrid=False, tickfont=dict(size=12, color='#E0E0E0'), linecolor='#2D5A3D')
     st.plotly_chart(fig_var, use_container_width=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# SEZIONE TASSE E CONTRIBUTI (corretta)
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
+# SEZIONE TASSE E CONTRIBUTI (corretta, con gestione errori)
+# =============================================================================
 elif sezione == "Tasse e Contributi":
     st.markdown('<div class="section-title">💶 Tasse e Contributi</div>', unsafe_allow_html=True)
     st.markdown("---")
@@ -962,7 +956,6 @@ elif sezione == "Tasse e Contributi":
         return 'Nord'
     statali_t = statali_t.copy()
     statali_t['Macro'] = statali_t['Ateneo'].apply(get_macro_t)
-    # Prendi max/min dopo aver aggiunto Macro
     max_row_t = statali_t.iloc[0]
     min_row_t = statali_t.iloc[-1]
     n_t = len(statali_t)
@@ -1034,9 +1027,9 @@ elif sezione == "Tasse e Contributi":
     fig_tasse_chart.update_yaxes(showgrid=True, gridcolor='#1A3D24', tickfont=dict(color=C_TESTO2_T), linecolor='#2D5A3D', tickprefix='€', range=[0, tasse['Contributo max'].max()*1.2], row=2, col=1)
     st.plotly_chart(fig_tasse_chart, use_container_width=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# SEZIONE ANALISI AVANZATA (G15 - G16)
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
+# SEZIONE ANALISI AVANZATA (originale)
+# =============================================================================
 elif sezione == "Analisi Avanzata":
     st.markdown('<div class="section-title">🔬 Analisi Avanzata</div>', unsafe_allow_html=True)
     st.markdown("---")
@@ -1127,14 +1120,13 @@ elif sezione == "Analisi Avanzata":
     fig_corr.update_yaxes(title=dict(text='Tasso prosecuzione al II anno (%)', font=dict(color='#E0E0E0')), showgrid=True, gridcolor='#1A3D24', ticksuffix='%', tickfont=dict(color='#E0E0E0'), linecolor='#2D5A3D')
     st.plotly_chart(fig_corr, use_container_width=True)
 
-# ═══════════════════════════════════════════════════════════════════════════════
-# SEZIONE SINTESI (corretta)
-# ═══════════════════════════════════════════════════════════════════════════════
+# =============================================================================
+# SEZIONE SINTESI (con ricalcolo KPI)
+# =============================================================================
 elif sezione == "Sintesi":
     st.markdown('<div class="section-title">📋 Sintesi</div>', unsafe_allow_html=True)
     st.markdown("---")
 
-    # Ricalcola KPI
     avvi_2025 = int(df[(df['ID Indicatore'] == 'iC00a') & (df['Anno accademico'] == 2025)]['Numeratore'].sum())
     n_atenei = df['Ateneo'].nunique()
     try:
