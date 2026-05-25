@@ -346,69 +346,208 @@ with st.sidebar:
         Fonti: MUR-USTAT, ANVUR,<br>AlmaLaurea · Dati 2010–2025</div>""", unsafe_allow_html=True)
 
 # =============================================================================
-# SEZIONE PANORAMICA (grafici L-8 originali, solo testo adattato)
+# =============================================================================
+# SEZIONE PANORAMICA L-8
 # =============================================================================
 if sezione == "Panoramica":
-    st.markdown('<div class="main-title">⚡ L-8 Ingegneria dell\'Informazione</div>', unsafe_allow_html=True)
-    st.markdown('<div class="main-subtitle">Analisi nazionale del panorama universitario · A.A. 2020–2025</div>', unsafe_allow_html=True)
+    st.markdown("# Analisi Nazionale\nL-8 Ingegneria dell'Informazione")
     st.markdown("---")
 
-    avvi_2025 = int(df[(df['ID Indicatore'] == 'iC00a') & (df['Anno accademico'] == 2025)]['Numeratore'].sum())
-    n_atenei  = df['Ateneo'].nunique()
-    try:
-        iscritti_2025 = int(mur_i_l8[mur_i_l8['AnnoA'] == '2024/2025']['Isc'].sum())
-    except:
-        iscritti_2025 = int(mur_i_l8.groupby('AnnoA')['Isc'].sum().iloc[-1])
-    try:
-        lau_2024 = int(mur_l_l8[mur_l_l8['AnnoS'] == 2024]['Lau'].sum())
-    except:
-        lau_2024 = int(mur_l_l8.groupby('AnnoS')['Lau'].sum().iloc[-1])
+    st.markdown("""
+    <p>
+    Questa analisi documenta il panorama nazionale del Corso di Laurea in
+    Ingegneria dell'Informazione (Classe L-8) attraverso dati ufficiali
+    MUR-USTAT, ANVUR e AlmaLaurea.
+    I dati coprono il periodo 2010–2025 e includono avvii di carriera
+    al primo anno, iscritti, laureati, distribuzione geografica,
+    profilo degli studenti e indicatori di qualità della didattica.
+    </p>
+    """, unsafe_allow_html=True)
 
-    c1, c2, c3, c4 = st.columns(4)
-    with c1:
-        st.markdown(f'<div class="kpi-card"><div class="kpi-label">Avvii 2025</div><div class="kpi-value">{avvi_2025:,}</div><div class="kpi-sub">Primo anno (iC00a)</div></div>', unsafe_allow_html=True)
-    with c2:
-        st.markdown(f'<div class="kpi-card"><div class="kpi-label">Atenei attivi</div><div class="kpi-value">{n_atenei}</div><div class="kpi-sub">Con corsi L-8</div></div>', unsafe_allow_html=True)
-    with c3:
-        st.markdown(f'<div class="kpi-card"><div class="kpi-label">Iscritti 2024/25</div><div class="kpi-value">{iscritti_2025:,}</div><div class="kpi-sub">Fonte MUR-USTAT</div></div>', unsafe_allow_html=True)
-    with c4:
-        st.markdown(f'<div class="kpi-card"><div class="kpi-label">Laureati 2024</div><div class="kpi-value">{lau_2024:,}</div><div class="kpi-sub">Fonte MUR-USTAT</div></div>', unsafe_allow_html=True)
+    # KPI dinamici
+    avvi_2025 = int(
+        df[
+            (df['ID Indicatore'] == 'iC00a') &
+            (df['Anno accademico'] == 2025)
+        ]['Numeratore'].sum()
+    )
+
+    n_atenei = df['Ateneo'].nunique()
+
+    try:
+        iscritti_2025 = int(
+            mur_i_l8[mur_i_l8['AnnoA'] == '2024/2025']['Isc'].sum()
+        )
+    except:
+        iscritti_2025 = int(
+            mur_i_l8.groupby('AnnoA')['Isc'].sum().iloc[-1]
+        )
+
+    try:
+        lau_2024 = int(
+            mur_l_l8[mur_l_l8['AnnoS'] == 2024]['Lau'].sum()
+        )
+    except:
+        lau_2024 = int(
+            mur_l_l8.groupby('AnnoS')['Lau'].sum().iloc[-1]
+        )
+
+    st.markdown("### Indicatori chiave")
+
+    kpi = [
+        {
+            'label': 'Avvii di carriera 2025',
+            'value': f'{avvi_2025:,}'.replace(',', '.'),
+            'delta': 'iC00a · primo anno',
+            'color': '#3B82F6'
+        },
+        {
+            'label': 'Atenei attivi L-8',
+            'value': f'{n_atenei}',
+            'delta': 'corsi nazionali attivi',
+            'color': '#60A5FA'
+        },
+        {
+            'label': 'Iscritti 2024/25',
+            'value': f'{iscritti_2025:,}'.replace(',', '.'),
+            'delta': 'Fonte MUR-USTAT',
+            'color': '#818CF8'
+        },
+        {
+            'label': 'Laureati 2024',
+            'value': f'{lau_2024:,}'.replace(',', '.'),
+            'delta': 'Fonte MUR-USTAT',
+            'color': '#2563EB'
+        },
+    ]
+
+    cols = st.columns(4)
+
+    for col, k in zip(cols, kpi):
+        with col:
+            st.markdown(f"""
+            <div class="section-card"
+                 style="
+                    border-top: 3px solid {k['color']};
+                    padding: 1.25rem;
+                 ">
+
+                <div style="
+                    font-size:0.75rem;
+                    color:#C8C8C8;
+                    text-transform:uppercase;
+                    letter-spacing:0.08em;
+                    margin-bottom:0.5rem;
+                ">
+                    {k['label']}
+                </div>
+
+                <div style="
+                    font-size:2rem;
+                    font-weight:700;
+                    color:{k['color']};
+                    letter-spacing:-0.03em;
+                ">
+                    {k['value']}
+                </div>
+
+                <div style="
+                    font-size:0.78rem;
+                    color:#C8C8C8;
+                    margin-top:0.25rem;
+                ">
+                    {k['delta']}
+                </div>
+
+            </div>
+            """, unsafe_allow_html=True)
 
     st.markdown("---")
     st.markdown("### Struttura dell'analisi")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("""
-**📈 Iscritti**
-- Avvii di carriera nazionali 2020–2025
-- Treemap per famiglia di corso
-- Distribuzione geografica (mappa)
-- Top 15 atenei per avvii
-- Trend Lazio: tradizionali vs telematiche
-- Quota macro aree (bubble chart)
-- Iscritti MUR 2019–2025 (lollipop)
 
-**👤 Profilo Studenti**
-- Soddisfazione, riiscrizione, magistrale (gauge)
-- Destinazione alla magistrale (bar stacked)
-        """)
-    with col2:
-        st.markdown("""
-**🎓 Percorso Accademico**
-- Laureati MUR 2010–2024
-- Prosecuzione al II anno (donut iC14/iC21)
-- % Laureati in corso (iC02)
+    sezioni_info = [
+        (
+            "Iscritti",
+            "Avvii di carriera al primo anno, distribuzione geografica, top atenei, focus Lazio e totale iscritti.",
+            "#3B82F6"
+        ),
 
-**🔀 Varianti del Corso**
-- Prosecuzione per famiglia L-8
+        (
+            "Profilo Studenti",
+            "Soddisfazione, riiscrizione e prosecuzione verso la laurea magistrale.",
+            "#60A5FA"
+        ),
 
-**💶 Tasse e Contributi**
-- Contributo massimo per ateneo
+        (
+            "Percorso Accademico",
+            "Laureati, laureati in corso e prosecuzione al II anno.",
+            "#2563EB"
+        ),
 
-**🔬 Analisi Avanzata**
-- Studenti al II anno con ≥2/3 CFU (iC16BIS)
-- Correlazione dimensione corso vs prosecuzione
-        """)
+        (
+            "Varianti del Corso",
+            "Distribuzione delle famiglie e varianti della classe L-8.",
+            "#818CF8"
+        ),
+
+        (
+            "Tasse e Contributi",
+            "Confronto del contributo massimo annuo tra atenei statali e non statali.",
+            "#1D4ED8"
+        ),
+
+        (
+            "Analisi Avanzata",
+            "Indicatori iC16bis e correlazione tra dimensione del corso e performance accademica.",
+            "#60A5FA"
+        ),
+
+        (
+            "Sintesi",
+            "Riepilogo dei principali risultati dell'analisi nazionale.",
+            "#3B82F6"
+        ),
+    ]
+
+    for nome, desc, col in sezioni_info:
+        st.markdown(f"""
+        <div class="section-card"
+             style="
+                display:flex;
+                align-items:flex-start;
+                gap:1rem;
+                padding:1.25rem;
+             ">
+
+            <div style="
+                width:3px;
+                background:{col};
+                border-radius:2px;
+                min-height:40px;
+                flex-shrink:0;
+            "></div>
+
+            <div>
+                <div style="
+                    font-size:0.9rem;
+                    font-weight:600;
+                    color:#F5F5F7;
+                    margin-bottom:0.25rem;
+                ">
+                    {nome}
+                </div>
+
+                <div style="
+                    font-size:0.82rem;
+                    color:#C8C8C8;
+                    font-weight:300;
+                ">
+                    {desc}
+                </div>
+            </div>
+
+        </div>
+        """, unsafe_allow_html=True)
 
 # =============================================================================
 # SEZIONE ISCRITTI (G1 - G7 originali, con stessa struttura dell'app L-2)
