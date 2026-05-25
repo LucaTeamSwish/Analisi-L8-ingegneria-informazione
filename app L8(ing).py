@@ -347,24 +347,26 @@ with st.sidebar:
 
 # =============================================================================
 # =============================================================================
+# =============================================================================
 # SEZIONE PANORAMICA L-8
 # =============================================================================
 if sezione == "Panoramica":
+
     st.markdown("# Analisi Nazionale\nL-8 Ingegneria dell'Informazione")
     st.markdown("---")
 
     st.markdown("""
     <p>
-    Questa analisi documenta il panorama nazionale del Corso di Laurea in
-    Ingegneria dell'Informazione (Classe L-8) attraverso dati ufficiali
-    MUR-USTAT, ANVUR e AlmaLaurea.
-    I dati coprono il periodo 2010–2025 e includono avvii di carriera
-    al primo anno, iscritti, laureati, distribuzione geografica,
-    profilo degli studenti e indicatori di qualità della didattica.
+    Questa analisi documenta il panorama nazionale del Corso di Laurea
+    in Ingegneria dell'Informazione (Classe L-8) attraverso dati ufficiali
+    MUR-USTAT, ANVUR e AlmaLaurea. I dati coprono il periodo 2010–2025
+    e includono avvii di carriera al primo anno, iscritti, laureati,
+    distribuzione geografica, profilo degli studenti e indicatori
+    di qualità della didattica.
     </p>
     """, unsafe_allow_html=True)
 
-    # KPI dinamici
+    # KPI
     avvi_2025 = int(
         df[
             (df['ID Indicatore'] == 'iC00a') &
@@ -376,7 +378,9 @@ if sezione == "Panoramica":
 
     try:
         iscritti_2025 = int(
-            mur_i_l8[mur_i_l8['AnnoA'] == '2024/2025']['Isc'].sum()
+            mur_i_l8[
+                mur_i_l8['AnnoA'] == '2024/2025'
+            ]['Isc'].sum()
         )
     except:
         iscritti_2025 = int(
@@ -385,7 +389,9 @@ if sezione == "Panoramica":
 
     try:
         lau_2024 = int(
-            mur_l_l8[mur_l_l8['AnnoS'] == 2024]['Lau'].sum()
+            mur_l_l8[
+                mur_l_l8['AnnoS'] == 2024
+            ]['Lau'].sum()
         )
     except:
         lau_2024 = int(
@@ -397,27 +403,27 @@ if sezione == "Panoramica":
     kpi = [
         {
             'label': 'Avvii di carriera 2025',
-            'value': f'{avvi_2025:,}'.replace(',', '.'),
-            'delta': 'iC00a · primo anno',
+            'value': f'{avvi_2025:,}'.replace(",", "."),
+            'delta': '↑ trend stabile',
             'color': '#3B82F6'
         },
         {
             'label': 'Atenei attivi L-8',
             'value': f'{n_atenei}',
-            'delta': 'corsi nazionali attivi',
-            'color': '#60A5FA'
+            'delta': 'corsi nazionali',
+            'color': '#34D399'
         },
         {
             'label': 'Iscritti 2024/25',
-            'value': f'{iscritti_2025:,}'.replace(',', '.'),
+            'value': f'{iscritti_2025:,}'.replace(",", "."),
             'delta': 'Fonte MUR-USTAT',
-            'color': '#818CF8'
+            'color': '#F59E0B'
         },
         {
             'label': 'Laureati 2024',
-            'value': f'{lau_2024:,}'.replace(',', '.'),
+            'value': f'{lau_2024:,}'.replace(",", "."),
             'delta': 'Fonte MUR-USTAT',
-            'color': '#2563EB'
+            'color': '#818CF8'
         },
     ]
 
@@ -427,10 +433,8 @@ if sezione == "Panoramica":
         with col:
             st.markdown(f"""
             <div class="section-card"
-                 style="
-                    border-top: 3px solid {k['color']};
-                    padding: 1.25rem;
-                 ">
+                 style="border-top: 3px solid {k['color']};
+                 padding: 1.25rem;">
 
                 <div style="
                     font-size:0.75rem;
@@ -463,53 +467,56 @@ if sezione == "Panoramica":
             """, unsafe_allow_html=True)
 
     st.markdown("---")
+
     st.markdown("### Struttura dell'analisi")
 
     sezioni_info = [
+
         (
             "Iscritti",
-            "Avvii di carriera al primo anno, distribuzione geografica, top atenei, focus Lazio e totale iscritti.",
+            "Avvii di carriera al primo anno, distribuzione geografica, top atenei, focus sul Lazio e totale iscritti.",
             "#3B82F6"
         ),
 
         (
             "Profilo Studenti",
-            "Soddisfazione, riiscrizione e prosecuzione verso la laurea magistrale.",
-            "#60A5FA"
+            "Soddisfazione, riiscrizione e destinazione alla magistrale.",
+            "#34D399"
         ),
 
         (
             "Percorso Accademico",
-            "Laureati, laureati in corso e prosecuzione al II anno.",
-            "#2563EB"
+            "Laureati, laureati in corso e tasso di prosecuzione al II anno.",
+            "#EF4444"
         ),
 
         (
             "Varianti del Corso",
-            "Distribuzione delle famiglie e varianti della classe L-8.",
+            "Distribuzione delle varianti e famiglie della classe L-8.",
             "#818CF8"
         ),
 
         (
             "Tasse e Contributi",
-            "Confronto del contributo massimo annuo tra atenei statali e non statali.",
-            "#1D4ED8"
+            "Confronto contributo massimo annuo tra atenei statali e non statali.",
+            "#EF4444"
         ),
 
         (
             "Analisi Avanzata",
-            "Indicatori iC16bis e correlazione tra dimensione del corso e performance accademica.",
+            "iC16bis e correlazione tra dimensione del corso e prosecuzione.",
             "#60A5FA"
         ),
 
         (
             "Sintesi",
-            "Riepilogo dei principali risultati dell'analisi nazionale.",
-            "#3B82F6"
+            "Riepilogo dei risultati principali dell'analisi.",
+            "#F59E0B"
         ),
     ]
 
     for nome, desc, col in sezioni_info:
+
         st.markdown(f"""
         <div class="section-card"
              style="
@@ -528,6 +535,7 @@ if sezione == "Panoramica":
             "></div>
 
             <div>
+
                 <div style="
                     font-size:0.9rem;
                     font-weight:600;
@@ -544,11 +552,11 @@ if sezione == "Panoramica":
                 ">
                     {desc}
                 </div>
+
             </div>
 
         </div>
         """, unsafe_allow_html=True)
-
 # =============================================================================
 # SEZIONE ISCRITTI (G1 - G7 originali, con stessa struttura dell'app L-2)
 # =============================================================================
