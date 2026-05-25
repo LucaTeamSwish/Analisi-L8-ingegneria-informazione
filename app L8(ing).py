@@ -168,7 +168,7 @@ def load_data():
     lau_naz['AnnoS'] = lau_naz['AnnoS'].astype(int)
     lau_naz = lau_naz[lau_naz['AnnoS'] >= 2010].reset_index(drop=True)
     lau_naz['COVID'] = lau_naz['AnnoS'].isin([2020, 2021])
-    imm_naz = imm_l2.groupby('AnnoA')['Imm'].sum().reset_index()
+    imm_naz = pd.DataFrame(columns=['AnnoA', 'Imm', 'anno_short', 'delta'])
     imm_naz = imm_naz[imm_naz['AnnoA'].str[:4].astype(int) >= 2010].copy()
     imm_naz['anno_short'] = imm_naz['AnnoA'].str[:4] + '/' + imm_naz['AnnoA'].str[7:9]
     imm_naz['delta'] = imm_naz['Imm'].pct_change() * 100
