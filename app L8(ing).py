@@ -943,20 +943,19 @@ elif sezione == "Varianti del Corso":
     st.plotly_chart(fig_var, use_container_width=True)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# SEZIONE TASSE E CONTRIBUTI
-# ═══════════════════════════════════════════════════════════════════════════════
+# ── SEZIONE TASSE E CONTRIBUTI (corretta) ─────────────────────────────────────
 elif sezione == "Tasse e Contributi":
     st.markdown('<div class="section-title">💶 Tasse e Contributi</div>', unsafe_allow_html=True)
     st.markdown("---")
     chart_header("Contributo massimo annuo — L-8 Ingegneria dell'Informazione",
         "Confronto del contributo massimo (fascia ISEE più alta) per un campione di atenei. Le linee tratteggiate rosse indicano gli atenei non statali. Escluse le telematiche.",
         "Fonte: siti ufficiali atenei a.a. 2025/26")
-    statali_t     = tasse[tasse['Tipo']=='Statale'].sort_values('Contributo max', ascending=False).reset_index(drop=True)
+
+    statali_t = tasse[tasse['Tipo']=='Statale'].sort_values('Contributo max', ascending=False).reset_index(drop=True)
     non_statali_t = tasse[tasse['Tipo']=='Non Statale'].sort_values('Contributo max', ascending=False).reset_index(drop=True)
     media_statali_t = statali_t['Contributo max'].mean()
-    max_row_t = statali_t.iloc[0]
-    min_row_t = statali_t.iloc[-1]
-    n_t = len(statali_t)
+
+    # Funzione per macro area
     def get_macro_t(ateneo):
         nord   = ['Politecnico Milano','Politecnico Torino','Università di Padova','Università di Bologna','Politecnica delle Marche']
         centro = ['Sapienza','Roma 3','Tor Vergata']
@@ -968,58 +967,136 @@ elif sezione == "Tasse e Contributi":
         for s in sud:
             if s.lower() in ateneo.lower(): return 'Sud'
         return 'Nord'
+
     statali_t = statali_t.copy()
     statali_t['Macro'] = statali_t['Ateneo'].apply(get_macro_t)
-    BG_PAPER_T = BG_PAPER; BG_CARD_T = BG_CARD
-    C_NONST_T = '#F87171'; C_TESTO_T = '#E0E0E0'; C_TESTO2_T = '#D1D5DB'; C_GRIGIO_T = '#6B7280'
+
+    # Ora prendi max e min dopo aver aggiunto la colonna Macro
+    max_row_t = statali_t.iloc[0]   # ateneo con contributo più alto
+    min_row_t = statali_t.iloc[-1]  # ateneo con contributo più basso
+    n_t = len(statali_t)
+
+    BG_PAPER_T = BG_PAPER
+    BG_CARD_T = BG_CARD
+    C_NONST_T = '#F87171'
+    C_TESTO_T = '#E0E0E0'
+    C_TESTO2_T = '#D1D5DB'
+    C_GRIGIO_T = '#6B7280'
     COLORI_MACRO_T = {'Nord': '#60A5FA', 'Centro': '#22C55E', 'Sud': '#FB923C'}
-    fig_tasse_chart = make_subplots(rows=2, cols=1, row_heights=[0.28, 0.72], vertical_spacing=0.04, specs=[[{'type':'xy'}],[{'type':'xy'}]])
-    fig_tasse_chart.add_trace(go.Scatter(x=[0], y=[0], mode='markers', marker=dict(opacity=0), showlegend=False, hoverinfo='skip'), row=1, col=1)
+
+    fig_tasse_chart = make_subplots(rows=2, cols=1, row_heights=[0.28, 0.72],
+                                    vertical_spacing=0.04, specs=[[{'type':'xy'}],[{'type':'xy'}]])
+    fig_tasse_chart.add_trace(go.Scatter(x=[0], y=[0], mode='markers',
+                                         marker=dict(opacity=0), showlegend=False, hoverinfo='skip'), row=1, col=1)
+
     for macro in ['Nord','Centro','Sud']:
         sub = statali_t[statali_t['Macro']==macro]
-        fig_tasse_chart.add_trace(go.Bar(x=sub['Ateneo'], y=sub['Contributo max'], name=macro, marker=dict(color=COLORI_MACRO_T[macro], line=dict(width=0), opacity=0.9, cornerradius=4),
-            text=sub['Contributo max'].apply(lambda v: f'€{v:,.0f}'.replace(',','.')), textposition='outside', textfont=dict(color=C_TESTO_T, size=11, family='Inter'),
-            hovertemplate='<b>%{x}</b><br>Contributo max: <b>€%{y:,.0f}</b><extra></extra>'), row=2, col=1)
+        if len(sub) > 0:
+            fig_tasse_chart.add_trace(go.Bar(x=sub['Ateneo'], y=sub['Contributo max'], name=macro,
+                marker=dict(color=COLORI_MACRO_T[macro], line=dict(width=0), opacity=0.9, cornerradius=4),
+                text=sub['Contributo max'].apply(lambda v: f'€{v:,.0f}'.replace(',','.')),
+                textposition='outside', textfont=dict(color=C_TESTO_T, size=11, family='Inter'),
+                hovertemplate='<b>%{x}</b><br>Contributo max: <b>€%{y:,.0f}</b><extra></extra>'), row=2, col=1)
+
     colori_ns = ['#F87171','#FCA5A5']
     for i, (_, row) in enumerate(non_statali_t.iterrows()):
-        fig_tasse_chart.add_trace(go.Scatter(x=[-0.5, n_t-0.5], y=[row['Contributo max'], row['Contributo max']], mode='lines', name=row['Ateneo'].strip(),
-            line=dict(color=colori_ns[i % len(colori_ns)], width=2.5, dash='dash'), showlegend=True, xaxis='x3', yaxis='y2',
+        fig_tasse_chart.add_trace(go.Scatter(x=[-0.5, n_t-0.5], y=[row['Contributo max'], row['Contributo max']],
+            mode='lines', name=row['Ateneo'].strip(),
+            line=dict(color=colori_ns[i % len(colori_ns)], width=2.5, dash='dash'),
+            showlegend=True, xaxis='x3', yaxis='y2',
             hovertemplate=f"<b>{row['Ateneo'].strip()}: €{row['Contributo max']:,.0f}</b><extra></extra>"))
-    fig_tasse_chart.add_trace(go.Scatter(x=[-0.5, n_t-0.5], y=[media_statali_t, media_statali_t], mode='lines', name='Media statali',
-        line=dict(color=C_TESTO2_T, width=2, dash='dot'), showlegend=False, xaxis='x3', yaxis='y2', hoverinfo='skip'))
+
+    fig_tasse_chart.add_trace(go.Scatter(x=[-0.5, n_t-0.5], y=[media_statali_t, media_statali_t],
+        mode='lines', name='Media statali',
+        line=dict(color=C_TESTO2_T, width=2, dash='dot'),
+        showlegend=False, xaxis='x3', yaxis='y2', hoverinfo='skip'))
+
     cards_t = [
-        {'titolo': 'STATALE PIÙ CARO', 'valore': f"€{max_row_t['Contributo max']:,.0f}".replace(',','.'), 'sub1': max_row_t['Ateneo'].strip(), 'sub2': f"Macro area: {max_row_t['Macro']}", 'colore': COLORI_MACRO_T.get(max_row_t['Macro'], '#60A5FA')},
-        {'titolo': 'MEDIA STATALI', 'valore': f"€{media_statali_t:,.0f}".replace(',','.'), 'sub1': f'{n_t} atenei nel campione', 'sub2': 'su 48 atenei L-8 totali', 'colore': C_GRIGIO_T},
-        {'titolo': 'STATALE MENO CARO', 'valore': f"€{min_row_t['Contributo max']:,.0f}".replace(',','.'), 'sub1': min_row_t['Ateneo'].strip(), 'sub2': f"Macro area: {min_row_t['Macro']}", 'colore': COLORI_MACRO_T.get(min_row_t['Macro'], '#22C55E')},
+        {'titolo': 'STATALE PIÙ CARO', 'valore': f"€{max_row_t['Contributo max']:,.0f}".replace(',','.'),
+         'sub1': max_row_t['Ateneo'].strip(), 'sub2': f"Macro area: {max_row_t['Macro']}",
+         'colore': COLORI_MACRO_T.get(max_row_t['Macro'], '#60A5FA')},
+        {'titolo': 'MEDIA STATALI', 'valore': f"€{media_statali_t:,.0f}".replace(',','.'),
+         'sub1': f'{n_t} atenei nel campione', 'sub2': 'su 48 atenei L-8 totali',
+         'colore': C_GRIGIO_T},
+        {'titolo': 'STATALE MENO CARO', 'valore': f"€{min_row_t['Contributo max']:,.0f}".replace(',','.'),
+         'sub1': min_row_t['Ateneo'].strip(), 'sub2': f"Macro area: {min_row_t['Macro']}",
+         'colore': COLORI_MACRO_T.get(min_row_t['Macro'], '#22C55E')},
     ]
-    shapes_t = []; annotations_t = []
-    card_y0_t=0.76; card_y1_t=0.99; gaps_t=[0.01,0.34,0.67]; card_w_t=0.31
+
+    shapes_t = []
+    annotations_t = []
+    card_y0_t = 0.76
+    card_y1_t = 0.99
+    gaps_t = [0.01, 0.34, 0.67]
+    card_w_t = 0.31
+
     for i_t, card_t in enumerate(cards_t):
-        x0_t=gaps_t[i_t]; x1_t=x0_t+card_w_t; cx_t=(x0_t+x1_t)/2; cy_t=(card_y0_t+card_y1_t)/2
-        shapes_t.append(dict(type='rect', xref='paper', yref='paper', x0=x0_t, x1=x1_t, y0=card_y0_t, y1=card_y1_t, fillcolor=BG_CARD_T, line=dict(color=card_t['colore'], width=2.5), layer='below', opacity=1))
-        shapes_t.append(dict(type='rect', xref='paper', yref='paper', x0=x0_t, x1=x1_t, y0=card_y1_t-0.032, y1=card_y1_t, fillcolor=card_t['colore'], line=dict(width=0), layer='above', opacity=1))
-        annotations_t.append(dict(x=cx_t, y=card_y1_t-0.02, xref='paper', yref='paper', text=f"<b>{card_t['titolo']}</b>", font=dict(size=13, color='white', family='Inter'), showarrow=False, xanchor='center', yanchor='middle'))
-        annotations_t.append(dict(x=cx_t, y=cy_t+0.055, xref='paper', yref='paper', text=f"<b>{card_t['valore']}</b>", font=dict(size=36, color=card_t['colore'], family='Inter'), showarrow=False, xanchor='center', yanchor='middle'))
-        annotations_t.append(dict(x=cx_t, y=cy_t-0.04, xref='paper', yref='paper', text=f"<b>{card_t['sub1']}</b>", font=dict(size=13, color='#F5F5F7', family='Inter'), showarrow=False, xanchor='center', yanchor='middle'))
-        annotations_t.append(dict(x=cx_t, y=card_y0_t+0.025, xref='paper', yref='paper', text=card_t['sub2'], font=dict(size=12, color=C_TESTO2_T, family='Inter'), showarrow=False, xanchor='center', yanchor='bottom'))
+        x0_t = gaps_t[i_t]
+        x1_t = x0_t + card_w_t
+        cx_t = (x0_t + x1_t) / 2
+        cy_t = (card_y0_t + card_y1_t) / 2
+        shapes_t.append(dict(type='rect', xref='paper', yref='paper',
+                             x0=x0_t, x1=x1_t, y0=card_y0_t, y1=card_y1_t,
+                             fillcolor=BG_CARD_T, line=dict(color=card_t['colore'], width=2.5),
+                             layer='below', opacity=1))
+        shapes_t.append(dict(type='rect', xref='paper', yref='paper',
+                             x0=x0_t, x1=x1_t, y0=card_y1_t-0.032, y1=card_y1_t,
+                             fillcolor=card_t['colore'], line=dict(width=0),
+                             layer='above', opacity=1))
+        annotations_t.append(dict(x=cx_t, y=card_y1_t-0.02, xref='paper', yref='paper',
+                                   text=f"<b>{card_t['titolo']}</b>",
+                                   font=dict(size=13, color='white', family='Inter'),
+                                   showarrow=False, xanchor='center', yanchor='middle'))
+        annotations_t.append(dict(x=cx_t, y=cy_t+0.055, xref='paper', yref='paper',
+                                   text=f"<b>{card_t['valore']}</b>",
+                                   font=dict(size=36, color=card_t['colore'], family='Inter'),
+                                   showarrow=False, xanchor='center', yanchor='middle'))
+        annotations_t.append(dict(x=cx_t, y=cy_t-0.04, xref='paper', yref='paper',
+                                   text=f"<b>{card_t['sub1']}</b>",
+                                   font=dict(size=13, color='#F5F5F7', family='Inter'),
+                                   showarrow=False, xanchor='center', yanchor='middle'))
+        annotations_t.append(dict(x=cx_t, y=card_y0_t+0.025, xref='paper', yref='paper',
+                                   text=card_t['sub2'],
+                                   font=dict(size=12, color=C_TESTO2_T, family='Inter'),
+                                   showarrow=False, xanchor='center', yanchor='bottom'))
+
+    # Annotazioni per atenei non statali
     for i, (_, row) in enumerate(non_statali_t.iterrows()):
-        annotations_t.append(dict(x=0.5, y=row['Contributo max'], xref='paper', yref='y2', text=f"<b>{row['Ateneo'].strip()} (non statale): €{row['Contributo max']:,.0f}</b>".replace(',','.'),
-            showarrow=False, font=dict(size=13, color=colori_ns[i % len(colori_ns)], family='Inter'), xanchor='center', yanchor='bottom', yshift=10,
+        annotations_t.append(dict(x=0.5, y=row['Contributo max'], xref='paper', yref='y2',
+            text=f"<b>{row['Ateneo'].strip()} (non statale): €{row['Contributo max']:,.0f}</b>".replace(',','.'),
+            showarrow=False, font=dict(size=13, color=colori_ns[i % len(colori_ns)], family='Inter'),
+            xanchor='center', yanchor='bottom', yshift=10,
             bgcolor='rgba(15,45,22,0.92)', bordercolor=colori_ns[i % len(colori_ns)], borderwidth=1.5, borderpad=12))
-    annotations_t.append(dict(x=0.99, y=media_statali_t, xref='paper', yref='y2', text=f"<b>Media statali: €{media_statali_t:,.0f}</b>".replace(',','.'), showarrow=False, font=dict(size=13, color=C_TESTO2_T, family='Inter'),
-        xanchor='right', yanchor='bottom', yshift=8, bgcolor='rgba(15,45,22,0.9)', borderpad=8))
-    annotations_t.append(dict(x=0.99, y=-0.08, xref='paper', yref='paper', text='Fonte: siti ufficiali atenei · Contributo massimo a.a. 2025/26 · Fascia ISEE più alta · Escluse telematiche',
+
+    annotations_t.append(dict(x=0.99, y=media_statali_t, xref='paper', yref='y2',
+        text=f"<b>Media statali: €{media_statali_t:,.0f}</b>".replace(',','.'),
+        showarrow=False, font=dict(size=13, color=C_TESTO2_T, family='Inter'),
+        xanchor='right', yanchor='bottom', yshift=8,
+        bgcolor='rgba(15,45,22,0.9)', borderpad=8))
+
+    annotations_t.append(dict(x=0.99, y=-0.08, xref='paper', yref='paper',
+        text='Fonte: siti ufficiali atenei · Contributo massimo a.a. 2025/26 · Fascia ISEE più alta · Escluse telematiche',
         showarrow=False, font=dict(size=10, color='#B0B0B0', family='Inter'), align='right', xanchor='right'))
-    fig_tasse_chart.update_layout(title=dict(text="Contributo Massimo Annuo — L-8 Ingegneria dell'Informazione", font=dict(size=20, color='white', family='Inter'), x=0.5, xanchor='center'),
-        shapes=shapes_t, annotations=annotations_t, barmode='group', plot_bgcolor=BG_PAPER, paper_bgcolor=BG_PAPER_T,
-        font=dict(family='Inter', size=12), legend=dict(font=dict(color=C_TESTO_T, size=12), bgcolor='rgba(0,0,0,0)', orientation='h', x=0.5, xanchor='center', y=0.73),
-        height=800, margin=dict(t=80, b=80, l=20, r=20), xaxis3=dict(overlaying='x2', range=[-0.5, n_t-0.5], visible=False, anchor='y2'))
+
+    fig_tasse_chart.update_layout(
+        title=dict(text="Contributo Massimo Annuo — L-8 Ingegneria dell'Informazione",
+                   font=dict(size=20, color='white', family='Inter'), x=0.5, xanchor='center'),
+        shapes=shapes_t, annotations=annotations_t, barmode='group',
+        plot_bgcolor=BG_PAPER, paper_bgcolor=BG_PAPER_T,
+        font=dict(family='Inter', size=12),
+        legend=dict(font=dict(color=C_TESTO_T, size=12), bgcolor='rgba(0,0,0,0)',
+                    orientation='h', x=0.5, xanchor='center', y=0.73),
+        height=800, margin=dict(t=80, b=80, l=20, r=20),
+        xaxis3=dict(overlaying='x2', range=[-0.5, n_t-0.5], visible=False, anchor='y2'))
+
     fig_tasse_chart.update_xaxes(visible=False, row=1, col=1)
     fig_tasse_chart.update_yaxes(visible=False, row=1, col=1)
-    fig_tasse_chart.update_xaxes(showgrid=False, tickfont=dict(color=C_TESTO_T, size=11), linecolor='#2D5A3D', tickangle=-20, row=2, col=1)
-    fig_tasse_chart.update_yaxes(showgrid=True, gridcolor='#1A3D24', tickfont=dict(color=C_TESTO2_T), linecolor='#2D5A3D', tickprefix='€', range=[0, tasse['Contributo max'].max()*1.2], row=2, col=1)
+    fig_tasse_chart.update_xaxes(showgrid=False, tickfont=dict(color=C_TESTO_T, size=11),
+                                  linecolor='#2D5A3D', tickangle=-20, row=2, col=1)
+    fig_tasse_chart.update_yaxes(showgrid=True, gridcolor='#1A3D24', tickfont=dict(color=C_TESTO2_T),
+                                  linecolor='#2D5A3D', tickprefix='€',
+                                  range=[0, tasse['Contributo max'].max()*1.2], row=2, col=1)
     st.plotly_chart(fig_tasse_chart, use_container_width=True)
-
 # ═══════════════════════════════════════════════════════════════════════════════
 # SEZIONE ANALISI AVANZATA
 # ═══════════════════════════════════════════════════════════════════════════════
