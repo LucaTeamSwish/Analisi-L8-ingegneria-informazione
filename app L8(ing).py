@@ -111,10 +111,11 @@ def load_data():
                 return pd.read_csv(BASE + f, sep=None, engine='python', encoding=enc)
             except:
                 continue
-    df_imm = pd.DataFrame()  # Non usato in L-8
+    df_imm = load('MURiscrittixcorsodistudi.csv')
+    if df_imm is None: df_imm = pd.DataFrame(columns=['ClasseNUMERO'])
     df_lau = load('MUR_laureatixclasse.csv')
     df_corso = load('MURiscrittixcorsodistudi.csv')
-    imm_l2 = df_imm[df_imm['ClasseNUMERO'].astype(str).str.strip() == 'L-8'].copy()
+    imm_l2 = pd.DataFrame()
     anno1_l2 = pd.DataFrame()
     lau_l2 = df_lau[df_lau['ClasseNUMERO'].astype(str).str.strip() == 'L-8'].copy()
     corso_l2 = df_corso[df_corso['ClasseNUMERO'].astype(str).str.strip() == 'L-8'].copy()
