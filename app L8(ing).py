@@ -207,6 +207,9 @@ def load_data():
         'Campania': 'Sud', 'Puglia': 'Sud', 'Basilicata': 'Sud', 'Calabria': 'Sud', 'Molise': 'Sud',
         'Sicilia': 'Isole', 'Sardegna': 'Isole',
     })
+    df_pentaho = pd.read_csv(BASE + 'PENTAHO(L8).csv', sep=',', encoding='latin-1', quotechar='"', on_bad_lines='skip')
+    df_pentaho['Ateneo'] = df_pentaho['Ateneo'].str.encode('latin-1', errors='replace').str.decode('utf-8', errors='replace')
+    df_pentaho['Numeratore'] = pd.to_numeric(df_pentaho['Numeratore'].astype(str).str.replace('.000','',regex=False).str.replace(',','.',regex=False), errors='coerce')
     df_ava2 = df_pentaho.copy()
     df_ava2['CODICE'] = df_ava2['ID Indicatore']
     df_ava2['INDICATORE'] = df_ava2['Numeratore']
@@ -218,9 +221,6 @@ def load_data():
     df_ava2['NUMERATORE'] = df_ava2['Numeratore']
     df_ava2['ID_REGIONE_MACRO_ISTAT'] = df_ava2['Ateneo'].map(ATENEO_REG_L8).map(REGIONE_MACRO_L8).map({'Nord':1,'Centro':3,'Sud':4,'Isole':4})
     df_ava2['COMUNE'] = df_ava2['Ateneo']
-    df_pentaho = pd.read_csv(BASE + 'PENTAHO(L8).csv', sep=',', encoding='latin-1', quotechar='"', on_bad_lines='skip')
-    df_pentaho['Ateneo'] = df_pentaho['Ateneo'].str.encode('latin-1', errors='replace').str.decode('utf-8', errors='replace')
-    df_pentaho['Numeratore'] = pd.to_numeric(df_pentaho['Numeratore'].astype(str).str.replace('.000','',regex=False).str.replace(',','.',regex=False), errors='coerce')
     df_avvi = df_pentaho[df_pentaho['ID Indicatore']=='iC00a'].copy()
     df_avvi['corso_nome'] = df_avvi['Nome Corso'].str.split(' - ', n=1).str[1].str.strip()
     df_lau_corso = df_pentaho[df_pentaho['ID Indicatore']=='iC02'].copy()
