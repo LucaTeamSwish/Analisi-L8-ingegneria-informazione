@@ -76,7 +76,7 @@ BG_PAPER  = '#0A2010'
 BG_CARD   = '#0F2D16'
 VERDE_MAIN  = '#22C55E'
 VERDE_LIGHT = '#86EFAC'
-COLORI_MACRO = {'Nord': '#22C55E', 'Centro': '#4ADE80', 'Sud': '#F59E0B', 'Isole': '#A3E635'}
+COLORI_MACRO = {'Nord': '#3B82F6', 'Centro': '#10B981', 'Sud': '#F59E0B', 'Isole': '#8B5CF6'}
 
 TELEMATICHE_LIST = [
     'Telematica Universitas Mercatorum', 'Telematica Uninettuno',
