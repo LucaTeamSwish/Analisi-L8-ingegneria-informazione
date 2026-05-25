@@ -1191,13 +1191,25 @@ elif sezione == "Analisi Avanzata":
 elif sezione == "Sintesi":
     st.markdown('<div class="section-title">📋 Sintesi</div>', unsafe_allow_html=True)
     st.markdown("---")
-    # KPI sintetici
-    lau_2010 = int(mur_l_l8[mur_l_l8['AnnoS']==2010]['Lau'].sum()) if 2010 in mur_l_l8['AnnoS'].values else 0
+
+    # Ricalcola i KPI (per sicurezza, perché potrebbero non essere disponibili)
+    avvi_2025 = int(df[(df['ID Indicatore'] == 'iC00a') & (df['Anno accademico'] == 2025)]['Numeratore'].sum())
+    n_atenei = df['Ateneo'].nunique()
+    try:
+        iscritti_2025 = int(mur_i_l8[mur_i_l8['AnnoA'] == '2024/2025']['Isc'].sum())
+    except:
+        iscritti_2025 = int(mur_i_l8.groupby('AnnoA')['Isc'].sum().iloc[-1])
+    try:
+        lau_2024 = int(mur_l_l8[mur_l_l8['AnnoS'] == 2024]['Lau'].sum())
+    except:
+        lau_2024 = int(mur_l_l8.groupby('AnnoS')['Lau'].sum().iloc[-1])
+
+    lau_2010 = int(mur_l_l8[mur_l_l8['AnnoS'] == 2010]['Lau'].sum()) if 2010 in mur_l_l8['AnnoS'].values else 0
     crescita_lau = (lau_2024 - lau_2010) / lau_2010 * 100 if lau_2010 > 0 else 0
     ret_2025 = 1327
     pct_mag_2025 = 82.7
-    ic14_2024 = merge14[merge14['Anno accademico']==2024]['perc_iC14'].mean() if 2024 in merge14['Anno accademico'].values else 0
-    c1,c2,c3,c4 = st.columns(4)
+
+    c1, c2, c3, c4 = st.columns(4)
     with c1:
         st.markdown(f'<div class="kpi-card"><div class="kpi-label">Avvii 2025</div><div class="kpi-value">{avvi_2025:,}</div><div class="kpi-sub">Immatricolati puri (iC00a)</div></div>', unsafe_allow_html=True)
     with c2:
@@ -1206,6 +1218,7 @@ elif sezione == "Sintesi":
         st.markdown(f'<div class="kpi-card"><div class="kpi-label">Prosegue magistrale</div><div class="kpi-value">{pct_mag_2025}%</div><div class="kpi-sub">AlmaLaurea 2025</div></div>', unsafe_allow_html=True)
     with c4:
         st.markdown(f'<div class="kpi-card"><div class="kpi-label">Retribuzione media</div><div class="kpi-value">€{ret_2025:,}</div><div class="kpi-sub">Netta mensile 2025</div></div>', unsafe_allow_html=True)
+
     st.markdown("---")
     col1, col2 = st.columns([1,1])
     with col1:
@@ -1228,8 +1241,16 @@ Le **università telematiche** mostrano dinamiche strutturalmente diverse: dimen
         """)
     st.markdown("---")
     st.markdown("### 💶 Costo e accessibilità")
-    st.markdown(f"""
-Il **contributo massimo annuo** per gli atenei statali varia da **€{int(statali_t['Contributo max'].min()):,}** (Politecnico di Bari) a **€{int(statali_t['Contributo max'].max()):,}** (Politecnico di Milano), con una media di circa **€{int(media_statali_t):,}**. Gli atenei non statali si collocano significativamente al di sopra, con il Campus Bio-Medico a €6.640. Tutti gli atenei prevedono sistemi di esonero totale o parziale basati sull'ISEE, garantendo accessibilità anche alle fasce di reddito più basse.
-    """)
+    # Ricalcola anche le statistiche delle tasse per sicurezza
+    statali_sint = tasse[tasse['Tipo']=='Statale'].copy()
+    if not statali_sint.empty:
+        min_contrib = int(statali_sint['Contributo max'].min())
+        max_contrib = int(statali_sint['Contributo max'].max())
+        media_contrib = int(statali_sint['Contributo max'].mean())
+        st.markdown(f"""
+Il **contributo massimo annuo** per gli atenei statali varia da **€{min_contrib:,}** (Politecnico di Bari) a **€{max_contrib:,}** (Politecnico di Milano), con una media di circa **€{media_contrib:,}**. Gli atenei non statali si collocano significativamente al di sopra, con il Campus Bio-Medico a €6.640. Tutti gli atenei prevedono sistemi di esonero totale o parziale basati sull'ISEE, garantendo accessibilità anche alle fasce di reddito più basse.
+        """)
+    else:
+        st.markdown("Dati sulle tasse non disponibili.")
     st.markdown("---")
     st.markdown('<span style="font-size:0.75rem;color:#6B7280;">Dati: ANVUR Cruscotto PENTAHO · MUR-USTAT · AlmaLaurea · Siti ufficiali atenei · A.A. 2020–2025</span>', unsafe_allow_html=True)
