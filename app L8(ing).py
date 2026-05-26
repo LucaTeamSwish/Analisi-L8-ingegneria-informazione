@@ -46,7 +46,7 @@ hr { border-color: var(--border) !important; margin: 2rem 0 !important; }
 [data-testid="metric-container"] { background: var(--bg-card) !important; border: 1px solid var(--border) !important; border-radius: 12px !important; padding: 1rem !important; }
 [data-testid="stMetricValue"] { color: var(--accent-green) !important; font-size: 1.8rem !important; font-weight: 600 !important; }
 [data-testid="stMetricLabel"] { color: var(--text-secondary) !important; }
-.chart-instructions { background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.15); border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.82rem; color: #60A5FA; }
+.chart-instructions { background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.15); border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.82rem; color: #22C55E; }
 .chart-description { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.65; margin-bottom: 1rem; font-weight: 300; }
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
