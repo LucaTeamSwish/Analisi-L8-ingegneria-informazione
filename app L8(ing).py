@@ -171,7 +171,7 @@ MACRO_FAMIGLIE_CLEAN = {k: ('Multidisciplinare' if v in ['Altro', 'Multidiscipli
 COLORI_FAMIGLIE = {
     'Informatica': '#14B8A6', 'Elettronica': '#0D9488',
     'Biomedica': '#99F6E4', 'Gestionale': '#0F766E',
-    'Telecomunicazioni': '#2DD4BF'', 'Automazione': '#115E59',
+    'Telecomunicazioni': '#2DD4BF', 'Automazione': '#115E59',
     'Informazione': '#134E4A', 'Multidisciplinare': '#6B7280',
 }
 
@@ -1017,7 +1017,7 @@ elif sezione == "Analisi Avanzata":
     anni_ic16 = ic16_naz['anno'].tolist()
     valori_ic16 = ic16_naz['pct'].tolist()
     media_ic16 = ic16_naz['pct'].mean()
-    colori_radial = ['#99F6E4','#2DD4BF'','#FACC15','#EAB308','#CA8A04']
+    colori_radial = ['#99F6E4','#2DD4BF','#FACC15','#EAB308','#CA8A04']
     fig_radial = go.Figure()
     for i, (anno, val) in enumerate(zip(anni_ic16, valori_ic16)):
         raggio_interno = 0.55 + i*0.07
