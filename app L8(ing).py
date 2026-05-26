@@ -465,7 +465,7 @@ elif sezione == "Iscritti":
     for i, anno in enumerate(anni_map):
         subset = df_mappa[df_mappa['anno']==anno]
         fig_map.add_trace(go.Choropleth(geojson=GEOJSON_URL, locations=subset['regione'], featureidkey='properties.reg_name',
-            z=subset['avvii'], colorscale=[[0.0,'#D4F1D4'],[0.25,'#99F6E4'],[0.5,'#2DD4BF''],[0.75,'#0D9488'],[1.0,'#134E4A']],
+            z=subset['avvii'], colorscale=[[0.0,'#D4F1D4'],[0.25,'#99F6E4'],[0.5,'#2DD4BF'],[0.75,'#0D9488'],[1.0,'#134E4A']],
             zmin=df_mappa['avvii'].min(), zmax=df_mappa['avvii'].max(),
             colorbar=dict(title=dict(text='Avvii', font=dict(color='#C8C8C8')), tickfont=dict(color='#C8C8C8'), x=1.0, thickness=15),
             marker_line_color='#041A1A', marker_line_width=1.5,
