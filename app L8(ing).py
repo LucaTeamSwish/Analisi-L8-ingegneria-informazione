@@ -19,7 +19,7 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 :root {
-    --bg-primary: #051A0A; --bg-secondary: #071A0D; --bg-card: #0C2410; --bg-card-hover: #102D14;
+    --bg-primary: #051A0A; --bg-secondary: #0A2010; --bg-card: #0F2D16; --bg-card-hover: #102D14;
     --border: rgba(255,255,255,0.08); --border-accent: rgba(34,197,94,0.4);
     --text-primary: #F5F5F7;
     --text-secondary: #C8C8C8;
@@ -64,9 +64,9 @@ footer { visibility: hidden; }
 """, unsafe_allow_html=True)
 
 # ── COSTANTI ──────────────────────────────────────────────────────────────────
-BG_PLOT   = '#071A0D'
-BG_PAPER  = '#071A0D'
-BG_CARD   = '#0C2410'
+BG_PLOT   = '#0A2010'
+BG_PAPER  = '#0A2010'
+BG_CARD   = '#0F2D16'
 VERDE_MAIN  = '#22C55E'
 VERDE_LIGHT = '#86EFAC'
 # Colori macro aree identici a L-2: Nord=blu, Centro=verde teal, Sud=arancio, Isole=viola
