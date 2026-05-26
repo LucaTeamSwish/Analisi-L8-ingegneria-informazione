@@ -1121,8 +1121,8 @@ elif sezione == "Sintesi":
     lau_2010 = int(mur_l_l8[mur_l_l8['AnnoS'] == 2010]['Lau'].sum()) if 2010 in mur_l_l8['AnnoS'].values else 0
     crescita_lau = (lau_2024 - lau_2010) / lau_2010 * 100 if lau_2010 > 0 else 0
     kpi_full = [
-        {'label':'Avvii di carriera 2025','value':f'{avvi_2025:,}','delta':'trend crescita 2020-2025','color':'#2DD4BF'','bg':'#134E4A'},
-        {'label':'Crescita laureati','value':f'+{crescita_lau:.0f}%','delta':'2010 → 2024','color':'#2DD4BF'','bg':'#134E4A'},
+        {'label':'Avvii di carriera 2025','value':f'{avvi_2025:,}','delta':'trend crescita 2020-2025','color':'#2DD4BF','bg':'#134E4A'},
+        {'label':'Crescita laureati','value':f'+{crescita_lau:.0f}%','delta':'2010 → 2024','color':'#2DD4BF','bg':'#134E4A'},
         {'label':'Soddisfatti del corso','value':'88.7%','delta':'AlmaLaurea 2025','color':'#34D399','bg':'#064E3B'},
         {'label':'Prosegue magistrale','value':'82.7%','delta':'AlmaLaurea 2025','color':'#34D399','bg':'#064E3B'},
         {'label':'Retribuzione media 2025','value':'€1.327','delta':'+17% vs 2020','color':'#34D399','bg':'#064E3B'},
