@@ -301,8 +301,8 @@ def fonte_ann(testo):
 with st.sidebar:
     st.markdown("""
     <div style='padding: 1.5rem 0 1rem 0;'>
-        <div style='font-size:1.1rem; font-weight:600; color:#F5F5F7; letter-spacing:-0.02em;'>L-8 Ingegneria</div>
-        <div style='font-size:0.75rem; color:#C8C8C8; margin-top:0.25rem; font-weight:400;'>dell'Informazione</div>
+        <div style='font-size:1.0rem; font-weight:600; color:#F5F5F7; letter-spacing:-0.02em;'>L-8 Ingegneria dell'Informazione</div>
+        <div style='font-size:0.75rem; color:#C8C8C8; margin-top:0.25rem; font-weight:400;'>Analisi Nazionale</div>
     </div>
     """, unsafe_allow_html=True)
     st.markdown('<div class="sidebar-title">Sezioni</div>', unsafe_allow_html=True)
