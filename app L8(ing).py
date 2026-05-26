@@ -369,7 +369,7 @@ elif sezione == "Iscritti":
 
     # G1 — Avvii nazionali
     chart_header("Avvii di carriera nazionali — L-8 (2020–2025)",
-        "Numero totale di immatricolati puri al primo anno (iC00a). La barra più chiara indica l'ultimo anno disponibile. Le variazioni percentuali rispetto all'anno precedente sono indicate all'interno delle barre.",
+        "Numero totale di avvii di carriera al primo anno (iC00a) in Italia per anno accademico. La barra più chiara indica l'ultimo anno disponibile.",
         "Passa il cursore sulle barre per vedere il valore esatto.")
     avvi_naz = df[df['ID Indicatore'] == 'iC00a'].groupby('Anno accademico')['Numeratore'].sum().reset_index()
     avvi_naz.columns = ['anno', 'avvii']
