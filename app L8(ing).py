@@ -19,11 +19,11 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 :root {
-    --bg-primary: #071F0C; --bg-secondary: #0D2814; --bg-card: #122F18; --bg-card-hover: #102D14;
-    --border: rgba(255,255,255,0.08); --border-accent: rgba(34,197,94,0.4);
+    --bg-primary: #041A1A; --bg-secondary: #0A2828; --bg-card: #0F3333; --bg-card-hover: #0D3030;
+    --border: rgba(255,255,255,0.08); --border-accent:  rgba(20,184,166,0.4);
     --text-primary: #F5F5F7;
     --text-secondary: #C8C8C8;
-    --accent-green: #22C55E;
+    --accent-green: #14B8A6;
     --font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 [data-testid="collapsedControl"] { display: block !important; visibility: visible !important; }
@@ -46,13 +46,13 @@ hr { border-color: var(--border) !important; margin: 2rem 0 !important; }
 [data-testid="metric-container"] { background: var(--bg-card) !important; border: 1px solid var(--border) !important; border-radius: 12px !important; padding: 1rem !important; }
 [data-testid="stMetricValue"] { color: var(--accent-green) !important; font-size: 1.8rem !important; font-weight: 600 !important; }
 [data-testid="stMetricLabel"] { color: var(--text-secondary) !important; }
-.chart-instructions { background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.15); border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.82rem; color: #22C55E; }
+.chart-instructions { background: rgba(20,184,166,0.06); border: 1px solid rgba(20,184,166,0.15)); border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.82rem; color: #14B8A6; }
 .chart-description { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.65; margin-bottom: 1rem; font-weight: 300; }
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--bg-primary); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-[data-testid="stForm"] button { background: #22C55E !important; color: white !important; font-weight: 700 !important; border-radius: 10px !important; }
-[data-testid="stForm"] button:hover { background: #16A34A !important; transform: translateY(-1px) !important; }
+[data-testid="stForm"] button { background: #14B8A6 !important; color: white !important; font-weight: 700 !important; border-radius: 10px !important; }
+[data-testid="stForm"] button:hover { background: #0D9488 !important; transform: translateY(-1px) !important; }
 #MainMenu { visibility: hidden; }
 footer { visibility: hidden; }
 [data-testid="stToolbarActions"] { display: none !important; }
@@ -64,11 +64,11 @@ footer { visibility: hidden; }
 """, unsafe_allow_html=True)
 
 # ── COSTANTI ──────────────────────────────────────────────────────────────────
-BG_PLOT   = '#0D2814'
-BG_PAPER  = '#0D2814'
-BG_CARD   = '#122F18'
-VERDE_MAIN  = '#22C55E'
-VERDE_LIGHT = '#86EFAC'
+BG_PLOT   = '#0A2828'
+BG_PAPER  = '#0A2828'
+BG_CARD   = '#0F3333'
+VERDE_MAIN  = '#14B8A6'
+VERDE_LIGHT = '#99F6E4'
 # Colori macro aree identici a L-2: Nord=blu, Centro=verde teal, Sud=arancio, Isole=viola
 COLORI_MACRO = {'Nord': '#3B82F6', 'Centro': '#10B981', 'Sud': '#F59E0B', 'Isole': '#8B5CF6'}
 
@@ -169,10 +169,10 @@ MACRO_FAMIGLIE = {
 }
 MACRO_FAMIGLIE_CLEAN = {k: ('Multidisciplinare' if v in ['Altro', 'Multidisciplinare'] else v) for k, v in MACRO_FAMIGLIE.items()}
 COLORI_FAMIGLIE = {
-    'Informatica': '#22C55E', 'Elettronica': '#16A34A',
-    'Biomedica': '#86EFAC', 'Gestionale': '#15803D',
-    'Telecomunicazioni': '#4ADE80', 'Automazione': '#166534',
-    'Informazione': '#14532D', 'Multidisciplinare': '#6B7280',
+    'Informatica': '#14B8A6', 'Elettronica': '#0D9488',
+    'Biomedica': '#99F6E4', 'Gestionale': '#0F766E',
+    'Telecomunicazioni': '#2DD4BF'', 'Automazione': '#115E59',
+    'Informazione': '#134E4A', 'Multidisciplinare': '#6B7280',
 }
 
 # ── DATI ──────────────────────────────────────────────────────────────────────
@@ -328,8 +328,8 @@ if sezione == "Panoramica":
     avvi_2025 = int(df[(df['ID Indicatore'] == 'iC00a') & (df['Anno accademico'] == 2025)]['Numeratore'].sum())
     n_atenei = df['Ateneo'].nunique()
     kpi = [
-        {'label': 'Avvii di carriera 2025', 'value': f'{avvi_2025:,}', 'delta': '↑ trend crescita', 'color': '#22C55E'},
-        {'label': 'Atenei attivi L-8',      'value': str(n_atenei),    'delta': 'incluse telematiche', 'color': '#4ADE80'},
+        {'label': 'Avvii di carriera 2025', 'value': f'{avvi_2025:,}', 'delta': '↑ trend crescita', 'color': '#14B8A6'},
+        {'label': 'Atenei attivi L-8',      'value': str(n_atenei),    'delta': 'incluse telematiche', 'color': '#2DD4BF''},
         {'label': 'Soddisfatti del corso',  'value': '88.7%',          'delta': 'AlmaLaurea 2025',    'color': '#F59E0B'},
         {'label': 'Prosegue magistrale',    'value': '82.7%',          'delta': 'AlmaLaurea 2025',    'color': '#34D399'},
     ]
@@ -344,8 +344,8 @@ if sezione == "Panoramica":
     st.markdown("---")
     st.markdown("### Struttura dell'analisi")
     sezioni_info = [
-        ("Iscritti", "Avvii di carriera al primo anno, distribuzione geografica, top atenei, focus sul Lazio e totale iscritti.", "#22C55E"),
-        ("Profilo Studenti", "Soddisfazione, riiscrizione e destinazione alla magistrale.", "#4ADE80"),
+        ("Iscritti", "Avvii di carriera al primo anno, distribuzione geografica, top atenei, focus sul Lazio e totale iscritti.", "#14B8A6"),
+        ("Profilo Studenti", "Soddisfazione, riiscrizione e destinazione alla magistrale.", "#2DD4BF'"),
         ("Percorso Accademico", "Laureati, laureati in corso e tasso di prosecuzione al II anno.", "#EF4444"),
         ("Varianti del Corso", "Tasso di prosecuzione per famiglia di corso L-8.", "#818CF8"),
         ("Tasse e Contributi", "Confronto contributo massimo annuo tra atenei statali e non statali.", "#EF4444"),
@@ -395,8 +395,8 @@ elif sezione == "Iscritti":
             orientation='h', x=0.5, xanchor='center', y=1.08),
         margin=dict(t=80, b=60, l=60, r=80), height=480,
         annotations=[fonte_ann('Fonte: ANVUR Cruscotto PENTAHO — Avvii di carriera al primo anno (iC00a)')])
-    fig_avvi.update_xaxes(showgrid=False, tickfont=dict(color='#C8C8C8', size=14), linecolor='#2D5A3D', tickmode='linear', dtick=1)
-    fig_avvi.update_yaxes(gridcolor='#1A3D24', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A3D', rangemode='tozero',
+    fig_avvi.update_xaxes(showgrid=False, tickfont=dict(color='#C8C8C8', size=14), linecolor='#2D5A5A', tickmode='linear', dtick=1)
+    fig_avvi.update_yaxes(gridcolor='#1A3A3A', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A', rangemode='tozero',
         title=dict(text='N° avvii di carriera', font=dict(color='#C8C8C8')), range=[0, avvi_naz['avvii'].max()*1.2])
     st.plotly_chart(fig_avvi, use_container_width=True)
     st.markdown("---")
@@ -422,7 +422,7 @@ elif sezione == "Iscritti":
             hovers.append(f"<b>{row['corso_nome']}</b><br>Avvii: <b>{int(row['avvii']):,}</b><br>N° atenei: <b>{row['n_atenei']}</b>")
         fig_tree.add_trace(go.Treemap(labels=labels, parents=parents, values=values, customdata=hovers,
             hovertemplate='%{customdata}<extra></extra>', branchvalues='total',
-            marker=dict(colors=colors, line=dict(color='#071F0C', width=2)),
+            marker=dict(colors=colors, line=dict(color='#041A1A', width=2)),
             textfont=dict(size=13, color='white', family='Inter'),
             pathbar=dict(visible=True, thickness=24, textfont=dict(size=12, color='white', family='Inter')),
             visible=(i == 0)))
@@ -465,14 +465,14 @@ elif sezione == "Iscritti":
     for i, anno in enumerate(anni_map):
         subset = df_mappa[df_mappa['anno']==anno]
         fig_map.add_trace(go.Choropleth(geojson=GEOJSON_URL, locations=subset['regione'], featureidkey='properties.reg_name',
-            z=subset['avvii'], colorscale=[[0.0,'#D4F1D4'],[0.25,'#86EFAC'],[0.5,'#4ADE80'],[0.75,'#16A34A'],[1.0,'#14532D']],
+            z=subset['avvii'], colorscale=[[0.0,'#D4F1D4'],[0.25,'#99F6E4'],[0.5,'#2DD4BF''],[0.75,'#0D9488'],[1.0,'#134E4A']],
             zmin=df_mappa['avvii'].min(), zmax=df_mappa['avvii'].max(),
             colorbar=dict(title=dict(text='Avvii', font=dict(color='#C8C8C8')), tickfont=dict(color='#C8C8C8'), x=1.0, thickness=15),
-            marker_line_color='#071F0C', marker_line_width=1.5,
+            marker_line_color='#041A1A', marker_line_width=1.5,
             text=subset['hover'], hovertemplate='%{text}<extra></extra>', name=str(anno), visible=(i==0)))
         fig_map.add_trace(go.Choropleth(geojson=GEOJSON_URL, locations=GRIGIO_SCURO, featureidkey='properties.reg_name',
             z=[0]*len(GRIGIO_SCURO), colorscale=[[0,'#3A3A3A'],[1,'#3A3A3A']], showscale=False,
-            marker_line_color='#071F0C', marker_line_width=1.5,
+            marker_line_color='#041A1A', marker_line_width=1.5,
             hovertemplate='<b>%{location}</b><br>Nessun corso L-8 attivo<extra></extra>',
             visible=(i==0), showlegend=False))
     n_layers = 2
@@ -532,8 +532,8 @@ elif sezione == "Iscritti":
             font=dict(size=12, family='Inter', color='#F5F5F7'), active=0, pad=dict(r=6,l=6,t=6,b=6))],
         legend=dict(title=dict(text='Macro area', font=dict(color='#C8C8C8')), font=dict(color='#C8C8C8'), bgcolor='rgba(0,0,0,0)', x=0.78, y=0.05),
         margin=dict(t=120, b=60, l=220, r=120), height=560, barmode='overlay')
-    fig_top.update_xaxes(title=dict(text='N° avvii', font=dict(color='#C8C8C8')), showgrid=False, tickfont=dict(color='#C8C8C8'), linecolor='#2D5A3D')
-    fig_top.update_yaxes(showgrid=False, tickfont=dict(size=12, color='#C8C8C8'), linecolor='#2D5A3D')
+    fig_top.update_xaxes(title=dict(text='N° avvii', font=dict(color='#C8C8C8')), showgrid=False, tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A')
+    fig_top.update_yaxes(showgrid=False, tickfont=dict(size=12, color='#C8C8C8'), linecolor='#2D5A5A')
     st.plotly_chart(fig_top, use_container_width=True)
     st.markdown("---")
 
@@ -554,9 +554,9 @@ elif sezione == "Iscritti":
     lazio_agg['hover'] = lazio_agg.apply(lambda r: build_hover(r['Ateneo'], r['Anno accademico']), axis=1)
     trad = lazio_agg[lazio_agg['tipo']=='Tradizionale'].copy()
     tele = lazio_agg[lazio_agg['tipo']=='Telematica'].copy()
-    PALETTE_TRAD = {'La Sapienza':'#22C55E','Tor Vergata':'#60A5FA','Roma Tre':'#FB923C',
+    PALETTE_TRAD = {'La Sapienza':'#14B8A6','Tor Vergata':'#60A5FA','Roma Tre':'#FB923C',
         'Campus Biomedico':'#C084FC','Università di Cassino e del Lazio Meridionale':'#F472B6'}
-    PALETTE_TELE = {'Telematica Universitas Mercatorum':'#86EFAC','Telematica Uninettuno':'#93C5FD',
+    PALETTE_TELE = {'Telematica Universitas Mercatorum':'#99F6E4','Telematica Uninettuno':'#93C5FD',
         'Telematica Guglielmo Marconi':'#FCD34D','Telematica Niccolò Cusano':'#F9A8D4','Link Campus':'#A3E635'}
     NOMI_BREVI = {'Università di Cassino e del Lazio Meridionale':'Cassino',
         'Telematica Universitas Mercatorum':'Universitas Mercatorum',
@@ -564,39 +564,39 @@ elif sezione == "Iscritti":
         'Telematica Niccolò Cusano':'N. Cusano'}
     fig_lazio = make_subplots(rows=1, cols=2, column_widths=[0.5,0.5], horizontal_spacing=0.08)
     for ateneo in trad.groupby('Ateneo')['Numeratore'].sum().sort_values(ascending=False).index:
-        colore = PALETTE_TRAD.get(ateneo,'#22C55E')
+        colore = PALETTE_TRAD.get(ateneo,'#14B8A6')
         nome = NOMI_BREVI.get(ateneo, ateneo)
         df_lab = trad[trad['Ateneo']==ateneo].sort_values('Anno accademico')
         fig_lazio.add_trace(go.Scatter(x=df_lab['Anno accademico'].astype(str), y=df_lab['Numeratore'],
             mode='lines+markers', name=nome, legendgroup='trad',
-            legendgrouptitle=dict(text='Tradizionali', font=dict(color='#86EFAC', size=12)),
-            line=dict(color=colore, width=2.5), marker=dict(size=8, color=colore, line=dict(color='#071F0C', width=1.5)),
+            legendgrouptitle=dict(text='Tradizionali', font=dict(color='#99F6E4', size=12)),
+            line=dict(color=colore, width=2.5), marker=dict(size=8, color=colore, line=dict(color='#041A1A', width=1.5)),
             text=df_lab['hover'], hovertemplate='%{text}<extra></extra>'), row=1, col=1)
         ultimo = df_lab.iloc[-1]
         fig_lazio.add_annotation(x=str(int(ultimo['Anno accademico'])), y=ultimo['Numeratore'],
             text=f"<b>{int(ultimo['Numeratore'])}</b>", showarrow=False, font=dict(size=9, color=colore), xanchor='left', xshift=8, row=1, col=1)
     for ateneo in tele.groupby('Ateneo')['Numeratore'].sum().sort_values(ascending=False).index:
-        colore = PALETTE_TELE.get(ateneo,'#86EFAC')
+        colore = PALETTE_TELE.get(ateneo,'#99F6E4')
         nome = NOMI_BREVI.get(ateneo, ateneo)
         df_lab = tele[tele['Ateneo']==ateneo].sort_values('Anno accademico')
         fig_lazio.add_trace(go.Scatter(x=df_lab['Anno accademico'].astype(str), y=df_lab['Numeratore'],
             mode='lines+markers', name=nome, legendgroup='tele',
             legendgrouptitle=dict(text='Telematiche', font=dict(color='#FCD34D', size=12)),
-            line=dict(color=colore, width=2.5), marker=dict(size=8, color=colore, line=dict(color='#071F0C', width=1.5)),
+            line=dict(color=colore, width=2.5), marker=dict(size=8, color=colore, line=dict(color='#041A1A', width=1.5)),
             text=df_lab['hover'], hovertemplate='%{text}<extra></extra>'), row=1, col=2)
         ultimo = df_lab.iloc[-1]
         fig_lazio.add_annotation(x=str(int(ultimo['Anno accademico'])), y=ultimo['Numeratore'],
             text=f"<b>{int(ultimo['Numeratore'])}</b>", showarrow=False, font=dict(size=9, color=colore), xanchor='left', xshift=8, row=1, col=2)
     fig_lazio.update_layout(font=dict(family='Inter', size=12), plot_bgcolor=BG_PLOT, paper_bgcolor=BG_PAPER,
         title=dict(text='Avvii L-8 nel Lazio — Tradizionali vs Telematiche', font=dict(size=18, color='#F5F5F7', family='Inter'), x=0.5, xanchor='center'),
-        annotations=[dict(x=0.22, y=1.10, xref='paper', yref='paper', text='<b>Atenei Tradizionali</b>', showarrow=False, font=dict(size=14, color='#86EFAC', family='Inter'), xanchor='center'),
+        annotations=[dict(x=0.22, y=1.10, xref='paper', yref='paper', text='<b>Atenei Tradizionali</b>', showarrow=False, font=dict(size=14, color='#99F6E4', family='Inter'), xanchor='center'),
             dict(x=0.78, y=1.10, xref='paper', yref='paper', text='<b>Atenei Telematici</b>', showarrow=False, font=dict(size=14, color='#FCD34D', family='Inter'), xanchor='center'),
             dict(x=0.99, y=-0.12, xref='paper', yref='paper', text='Fonte: ANVUR — iC00a', showarrow=False, font=dict(size=10, color='#9CA3AF'), xanchor='right')],
         legend=dict(font=dict(color='#C8C8C8', size=11), bgcolor='rgba(0,0,0,0)', groupclick='toggleitem', x=1.01, y=1, xanchor='left', yanchor='top'),
         height=500, margin=dict(t=130, b=80, l=60, r=160))
     for col in [1, 2]:
-        fig_lazio.update_xaxes(showgrid=False, tickfont=dict(color='#C8C8C8'), linecolor='#2D5A3D', row=1, col=col)
-        fig_lazio.update_yaxes(gridcolor='#1A3D24', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A3D',
+        fig_lazio.update_xaxes(showgrid=False, tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A', row=1, col=col)
+        fig_lazio.update_yaxes(gridcolor='#1A3A3A', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A',
             rangemode='tozero', title=dict(text='N° avvii', font=dict(color='#C8C8C8')), row=1, col=col)
     st.plotly_chart(fig_lazio, use_container_width=True)
     st.markdown("---")
@@ -620,7 +620,7 @@ elif sezione == "Iscritti":
         fig_bubble.add_trace(go.Scatter(x=subset['Anno accademico'].astype(str), y=subset['pct_offset'],
             mode='markers+text', name=macro,
             marker=dict(size=subset['Numeratore']/macro_pct['Numeratore'].max()*80+20,
-                color=COLORI_MACRO[macro], opacity=0.85, line=dict(color='#071F0C', width=2)),
+                color=COLORI_MACRO[macro], opacity=0.85, line=dict(color='#041A1A', width=2)),
             text=subset['pct'].apply(lambda x: f'{x:.1f}%'), textposition='middle center',
             textfont=dict(size=10, color='white', family='Inter'),
             customdata=list(zip(subset['pct'], subset['Numeratore'].astype(int))),
@@ -630,8 +630,8 @@ elif sezione == "Iscritti":
         annotations=[dict(x=0.99, y=-0.10, xref='paper', yref='paper', text='Fonte: ANVUR — Dimensione bolla = avvii assoluti', showarrow=False, font=dict(size=10, color='#9CA3AF'), xanchor='right')],
         legend=dict(font=dict(color='#C8C8C8', size=12), bgcolor='rgba(0,0,0,0)', x=0.01, y=0.99),
         height=500, margin=dict(t=80, b=80, l=60, r=30))
-    fig_bubble.update_xaxes(title=dict(text='Anno accademico', font=dict(color='#C8C8C8')), showgrid=False, tickfont=dict(color='#C8C8C8'), linecolor='#2D5A3D')
-    fig_bubble.update_yaxes(title=dict(text='Quota (%)', font=dict(color='#C8C8C8')), gridcolor='#1A3D24', ticksuffix='%', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A3D', range=[0, 70])
+    fig_bubble.update_xaxes(title=dict(text='Anno accademico', font=dict(color='#C8C8C8')), showgrid=False, tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A')
+    fig_bubble.update_yaxes(title=dict(text='Quota (%)', font=dict(color='#C8C8C8')), gridcolor='#1A3A3A', ticksuffix='%', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A', range=[0, 70])
     st.plotly_chart(fig_bubble, use_container_width=True)
     st.markdown("---")
 
@@ -661,8 +661,8 @@ elif sezione == "Iscritti":
         showlegend=True, legend=dict(font=dict(color='#C8C8C8', size=11), bgcolor='rgba(0,0,0,0)', orientation='h', x=0.5, xanchor='center', y=1.08),
         margin=dict(t=100, b=80, l=70, r=100), height=520,
         annotations=[fonte_ann('Fonte: MUR-USTAT — Iscritti L-8 per anno accademico')])
-    fig_isc.update_xaxes(showgrid=False, tickfont=dict(color='#C8C8C8', size=13), linecolor='#2D5A3D')
-    fig_isc.update_yaxes(gridcolor='#1A3D24', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A3D', rangemode='tozero',
+    fig_isc.update_xaxes(showgrid=False, tickfont=dict(color='#C8C8C8', size=13), linecolor='#2D5A5A')
+    fig_isc.update_yaxes(gridcolor='#1A3A3A', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A', rangemode='tozero',
         title=dict(text='N° iscritti', font=dict(color='#C8C8C8')), range=[0, isc_naz['Isc'].max()*1.2])
     st.plotly_chart(fig_isc, use_container_width=True)
 
@@ -678,7 +678,7 @@ elif sezione == "Profilo Studenti":
         "I tre indicatori riportano i valori del 2025 confrontati con un anno di riferimento selezionabile. I dati provengono dall'indagine AlmaLaurea sul Profilo dei Laureati.",
         "Seleziona l'anno di riferimento per il confronto con i pulsanti in alto.")
     val_2025 = {'pct_soddisfatti': 88.7, 'pct_riiscrizione': 73.1, 'pct_magistrale': 82.7}
-    indicatori_gauge = [('pct_soddisfatti','Soddisfatti del corso','#22C55E'),('pct_riiscrizione','Si reiscriverebbero','#60A5FA'),('pct_magistrale','Prosegue magistrale','#C084FC')]
+    indicatori_gauge = [('pct_soddisfatti','Soddisfatti del corso','#14B8A6'),('pct_riiscrizione','Si reiscriverebbero','#60A5FA'),('pct_magistrale','Prosegue magistrale','#C084FC')]
     anni_ref = [2020,2021,2022,2023,2024]
     fig_gauge = go.Figure()
     for anno_ref in anni_ref:
@@ -686,12 +686,12 @@ elif sezione == "Profilo Studenti":
         for col_idx, (col, titolo, colore) in enumerate(indicatori_gauge):
             val_ref = float(alma_profilo[alma_profilo['anno']==anno_ref][col].values[0])
             fig_gauge.add_trace(go.Indicator(mode='gauge+number+delta', value=val_2025[col],
-                delta={'reference': val_ref, 'suffix': '%', 'relative': False, 'increasing': {'color':'#22C55E'}, 'decreasing': {'color':'#F87171'}},
+                delta={'reference': val_ref, 'suffix': '%', 'relative': False, 'increasing': {'color':'#14B8A6'}, 'decreasing': {'color':'#F87171'}},
                 number={'suffix':'%','font':{'size':40,'color':colore}},
                 title={'text':f"<b style='color:#F5F5F7'>{titolo}</b><br><span style='font-size:11px;color:#9CA3AF'>2025 vs {anno_ref}</span>"},
                 gauge={'axis':{'range':[0,100],'ticksuffix':'%','tickfont':{'color':'#9CA3AF'},'tickcolor':'#9CA3AF'},
                     'bar':{'color':colore,'thickness':0.25},'bgcolor':BG_CARD,'borderwidth':0,
-                    'steps':[{'range':[0,50],'color':BG_PLOT},{'range':[50,75],'color':'#133A1C'},{'range':[75,100],'color':'#1A4D25'}],
+                    'steps':[{'range':[0,50],'color':BG_PLOT},{'range':[50,75],'color':'#133A3A'},{'range':[75,100],'color':'#1A4040'}],
                     'threshold':{'line':{'color':'#F59E0B','width':3},'thickness':0.75,'value':val_ref}},
                 domain={'x':[col_idx*0.34, col_idx*0.34+0.30],'y':[0,1]}, visible=visible))
     n_per_anno = len(indicatori_gauge)
@@ -720,20 +720,20 @@ elif sezione == "Profilo Studenti":
         df_dest2 = df_dest.copy()
         df_dest2['Altro'] = df_dest2['Altro Sud-Isole'].fillna(0) + df_dest2['Telematico'].fillna(0) + df_dest2['Estero'].fillna(0)
         df_dest2['hover_altro'] = df_dest2.apply(lambda r: f"<b>Altro</b><br>Anno {r['anno']}<br>&nbsp;&nbsp;Sud-Isole: <b>{(r['Altro Sud-Isole'] or 0):.1f}%</b><br>&nbsp;&nbsp;Telematico: <b>{(r['Telematico'] or 0):.1f}%</b><br>&nbsp;&nbsp;Estero: <b>{(r['Estero'] or 0):.1f}%</b><br>Totale: <b>{r['Altro']:.1f}%</b>", axis=1)
-        DEST_PLOT = {'Stesso Ateneo':'#22C55E','Altro Nord':'#60A5FA','Altro Centro':'#FB923C','Altro':'#9CA3AF'}
+        DEST_PLOT = {'Stesso Ateneo':'#14B8A6','Altro Nord':'#60A5FA','Altro Centro':'#FB923C','Altro':'#9CA3AF'}
         media_stesso = df_dest2['Stesso Ateneo'].mean()
         media_nord = df_dest2['Altro Nord'].mean()
         fig_dest = go.Figure()
         for col, colore in DEST_PLOT.items():
             if col == 'Altro':
                 fig_dest.add_trace(go.Bar(x=df_dest2['anno'], y=df_dest2[col], name=col,
-                    marker=dict(color=colore, line=dict(color='#071F0C', width=1), opacity=0.92),
+                    marker=dict(color=colore, line=dict(color='#041A1A', width=1), opacity=0.92),
                     text=df_dest2[col].apply(lambda x: f'{x:.1f}%'), textposition='inside',
                     textfont=dict(size=11, color='white', family='Inter'),
                     customdata=df_dest2['hover_altro'], hovertemplate='%{customdata}<extra></extra>'))
             else:
                 fig_dest.add_trace(go.Bar(x=df_dest2['anno'], y=df_dest2[col], name=col,
-                    marker=dict(color=colore, line=dict(color='#071F0C', width=1), opacity=0.92),
+                    marker=dict(color=colore, line=dict(color='#041A1A', width=1), opacity=0.92),
                     text=df_dest2[col].apply(lambda x: f'{x:.1f}%'), textposition='inside',
                     textfont=dict(size=11, color='white', family='Inter'),
                     hovertemplate=f'<b>{col}</b><br>Anno %{{x}}<br><b>%{{y:.1f}}%</b><extra></extra>'))
@@ -741,13 +741,13 @@ elif sezione == "Profilo Studenti":
             title=dict(text='Destinazione alla Magistrale — Laureati L-8 (2020–2025)', font=dict(size=18, color='#F5F5F7', family='Inter'), x=0.5, xanchor='center'),
             legend=dict(orientation='h', y=1.10, x=0.5, xanchor='center', bgcolor='rgba(0,0,0,0)', font=dict(color='#C8C8C8', size=12)),
             annotations=[dict(x=0.5, y=-0.20, xref='paper', yref='paper',
-                    text=f"<b style='color:#22C55E'>{media_stesso:.1f}%</b><span style='color:#C8C8C8'> resta nello stesso ateneo · </span><b style='color:#60A5FA'>{media_nord:.1f}%</b><span style='color:#C8C8C8'> sceglie un ateneo del Nord</span>",
+                    text=f"<b style='color:#14B8A6'>{media_stesso:.1f}%</b><span style='color:#C8C8C8'> resta nello stesso ateneo · </span><b style='color:#60A5FA'>{media_nord:.1f}%</b><span style='color:#C8C8C8'> sceglie un ateneo del Nord</span>",
                     showarrow=False, font=dict(size=12, family='Inter'), align='center'),
                 dict(x=0.99, y=-0.26, xref='paper', yref='paper', text='Fonte: AlmaLaurea · "Altro" include Sud-Isole, Telematico, Estero',
                     showarrow=False, font=dict(size=10, color='#9CA3AF'), xanchor='right')],
             height=540, margin=dict(t=100, b=100, l=60, r=30))
-        fig_dest.update_xaxes(title=dict(text='Anno di laurea', font=dict(color='#C8C8C8')), showgrid=False, tickfont=dict(color='#C8C8C8', size=14), linecolor='#2D5A3D')
-        fig_dest.update_yaxes(title=dict(text='%', font=dict(color='#C8C8C8')), range=[0,100], ticksuffix='%', gridcolor='#1A3D24', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A3D')
+        fig_dest.update_xaxes(title=dict(text='Anno di laurea', font=dict(color='#C8C8C8')), showgrid=False, tickfont=dict(color='#C8C8C8', size=14), linecolor='#2D5A5A')
+        fig_dest.update_yaxes(title=dict(text='%', font=dict(color='#C8C8C8')), range=[0,100], ticksuffix='%', gridcolor='#1A3A3A', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A')
         st.plotly_chart(fig_dest, use_container_width=True)
     else:
         st.info("Dati AlmaLaurea non disponibili per la destinazione magistrale.")
@@ -772,7 +772,7 @@ elif sezione == "Percorso Accademico":
     crescita = (ultimo_lau - primo) / primo * 100
     fig_lau = go.Figure()
     fig_lau.add_trace(go.Bar(x=lau_naz['anno'], y=lau_naz['laureati'],
-        marker=dict(color=['#F87171' if c else '#22C55E' for c in lau_naz['covid']], line=dict(width=0), opacity=0.9, cornerradius=4),
+        marker=dict(color=['#F87171' if c else '#14B8A6' for c in lau_naz['covid']], line=dict(width=0), opacity=0.9, cornerradius=4),
         text=lau_naz['laureati'].apply(lambda x: f'{x:,.0f}'),
         textposition='outside', textfont=dict(size=10, color='#F5F5F7', family='Inter'),
         hovertemplate='<b>%{x}</b><br>Laureati: <b>%{y:,.0f}</b><extra></extra>', showlegend=False))
@@ -780,12 +780,12 @@ elif sezione == "Percorso Accademico":
         title=dict(text="Laureati L-8 Ingegneria dell'Informazione — Italia (2010–2024)", font=dict(size=18, color='#F5F5F7', family='Inter'), x=0.5, xanchor='center'),
         showlegend=False,
         annotations=[dict(x=0.01, y=0.97, xref='paper', yref='paper',
-                text=f"<b style='color:#22C55E'>+{crescita:.0f}%</b><span style='color:#C8C8C8'> dal 2010 al 2024</span>",
+                text=f"<b style='color:#14B8A6'>+{crescita:.0f}%</b><span style='color:#C8C8C8'> dal 2010 al 2024</span>",
                 showarrow=False, font=dict(size=13, family='Inter'), align='left'),
             fonte_ann('Fonte: MUR-USTAT — Laureati L-8 per anno solare')],
         margin=dict(t=100, b=80, l=60, r=30), height=500)
-    fig_lau.update_xaxes(showgrid=False, tickfont=dict(color='#C8C8C8', size=12), linecolor='#2D5A3D', tickmode='linear', dtick=1, tickangle=-45)
-    fig_lau.update_yaxes(gridcolor='#1A3D24', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A3D', rangemode='tozero',
+    fig_lau.update_xaxes(showgrid=False, tickfont=dict(color='#C8C8C8', size=12), linecolor='#2D5A5A', tickmode='linear', dtick=1, tickangle=-45)
+    fig_lau.update_yaxes(gridcolor='#1A3A3A', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A', rangemode='tozero',
         title=dict(text='N° laureati', font=dict(color='#C8C8C8')), range=[0, lau_naz['laureati'].max()*1.18])
     st.plotly_chart(fig_lau, use_container_width=True)
     st.markdown("---")
@@ -800,7 +800,7 @@ elif sezione == "Percorso Accademico":
         row = df_destino[df_destino['anno']==anno].iloc[0]
         fig_donut.add_trace(go.Pie(labels=['Proseguono nello stesso corso','Cambiano corso o ateneo',"Lasciano l'università"],
             values=[row['prosegue_stesso'], row['cambia_corso'], row['abbandona']], hole=0.60,
-            marker=dict(colors=['#22C55E','#F59E0B','#F87171'], line=dict(color='#071F0C', width=3)),
+            marker=dict(colors=['#14B8A6','#F59E0B','#F87171'], line=dict(color='#041A1A', width=3)),
             textinfo='percent', textposition='outside', textfont=dict(size=13, color='#F5F5F7', family='Inter'),
             hovertemplate='<b>%{label}</b><br><b>%{value:.1f}%</b> degli immatricolati puri<extra></extra>',
             visible=(i==0), sort=False, pull=[0.03,0.03,0.03]))
@@ -855,8 +855,8 @@ elif sezione == "Percorso Accademico":
         annotations=[dict(x=media_ic02, y=1.02, xref='x', yref='paper', text=f'Media: {media_ic02:.1f}%',
                 showarrow=False, font=dict(size=11, color='#F59E0B'), align='center'),
             fonte_ann('Fonte: ANVUR — % laureati entro durata normale (iC02) · Esclusi valori >100%')])
-    fig_ic02.update_xaxes(showgrid=False, tickfont=dict(color='#C8C8C8'), linecolor='#2D5A3D', ticksuffix='%', range=[0, 50])
-    fig_ic02.update_yaxes(tickfont=dict(color='#C8C8C8', size=13), linecolor='#2D5A3D')
+    fig_ic02.update_xaxes(showgrid=False, tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A', ticksuffix='%', range=[0, 50])
+    fig_ic02.update_yaxes(tickfont=dict(color='#C8C8C8', size=13), linecolor='#2D5A5A')
     st.plotly_chart(fig_ic02, use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -882,7 +882,7 @@ elif sezione == "Varianti del Corso":
     baseline = baseline_val[0] if len(baseline_val) > 0 else 65.0
     def get_colore_var(row):
         if row['famiglia'] == 'Informatica': return '#9CA3AF'
-        elif row['prosecuzione'] > baseline: return '#22C55E'
+        elif row['prosecuzione'] > baseline: return '#14B8A6'
         else: return '#F87171'
     ic14_var['colore'] = ic14_var.apply(get_colore_var, axis=1)
     def build_hover_var(row):
@@ -901,13 +901,13 @@ elif sezione == "Varianti del Corso":
         annotations=[dict(x=baseline, y=1.02, xref='x', yref='paper', text=f'Baseline Informatica: {baseline:.1f}%',
                 showarrow=False, font=dict(size=10, color='#9CA3AF'), align='center'),
             dict(x=0.5, y=-0.20, xref='paper', yref='paper',
-                text="<b style='color:#22C55E'>Verde</b> = sopra baseline · <b style='color:#F87171'>Rosso</b> = sotto baseline · Hover su Multidisciplinare per le varianti",
+                text="<b style='color:#14B8A6'>Verde</b> = sopra baseline · <b style='color:#F87171'>Rosso</b> = sotto baseline · Hover su Multidisciplinare per le varianti",
                 showarrow=False, font=dict(size=11, color='#C8C8C8'), align='center'),
             dict(x=0.99, y=-0.26, xref='paper', yref='paper', text='Fonte: ANVUR iC14 · Media 2020–2024 per famiglia di corso',
                 showarrow=False, font=dict(size=10, color='#9CA3AF'), xanchor='right')],
         height=520, margin=dict(t=80, b=100, l=160, r=180))
-    fig_var.update_xaxes(title=dict(text='% prosecuzione al II anno', font=dict(color='#C8C8C8')), showgrid=False, ticksuffix='%', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A3D', range=[0, 100])
-    fig_var.update_yaxes(showgrid=False, tickfont=dict(size=12, color='#C8C8C8'), linecolor='#2D5A3D')
+    fig_var.update_xaxes(title=dict(text='% prosecuzione al II anno', font=dict(color='#C8C8C8')), showgrid=False, ticksuffix='%', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A', range=[0, 100])
+    fig_var.update_yaxes(showgrid=False, tickfont=dict(size=12, color='#C8C8C8'), linecolor='#2D5A5A')
     st.plotly_chart(fig_var, use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -999,8 +999,8 @@ elif sezione == "Tasse e Contributi":
         height=800, margin=dict(t=80, b=80, l=20, r=20), xaxis3=dict(overlaying='x2', range=[-0.5, n_t-0.5], visible=False, anchor='y2'))
     fig_tasse_chart.update_xaxes(visible=False, row=1, col=1)
     fig_tasse_chart.update_yaxes(visible=False, row=1, col=1)
-    fig_tasse_chart.update_xaxes(showgrid=False, tickfont=dict(color=C_TESTO_T, size=11), linecolor='#2D5A3D', tickangle=-20, row=2, col=1)
-    fig_tasse_chart.update_yaxes(showgrid=True, gridcolor='#1A3D24', tickfont=dict(color=C_TESTO2_T), linecolor='#2D5A3D', tickprefix='€', range=[0, tasse['Contributo max'].max()*1.2], row=2, col=1)
+    fig_tasse_chart.update_xaxes(showgrid=False, tickfont=dict(color=C_TESTO_T, size=11), linecolor='#2D5A5A', tickangle=-20, row=2, col=1)
+    fig_tasse_chart.update_yaxes(showgrid=True, gridcolor='#1A3A3A', tickfont=dict(color=C_TESTO2_T), linecolor='#2D5A5A', tickprefix='€', range=[0, tasse['Contributo max'].max()*1.2], row=2, col=1)
     st.plotly_chart(fig_tasse_chart, use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1017,7 +1017,7 @@ elif sezione == "Analisi Avanzata":
     anni_ic16 = ic16_naz['anno'].tolist()
     valori_ic16 = ic16_naz['pct'].tolist()
     media_ic16 = ic16_naz['pct'].mean()
-    colori_radial = ['#86EFAC','#4ADE80','#FACC15','#EAB308','#CA8A04']
+    colori_radial = ['#99F6E4','#2DD4BF'','#FACC15','#EAB308','#CA8A04']
     fig_radial = go.Figure()
     for i, (anno, val) in enumerate(zip(anni_ic16, valori_ic16)):
         raggio_interno = 0.55 + i*0.07
@@ -1077,12 +1077,12 @@ elif sezione == "Analisi Avanzata":
         sub = df_trad[df_trad['macro']==macro]
         if len(sub) > 0:
             fig_corr.add_trace(go.Scatter(x=sub['imm_media'], y=sub['prosecuzione'], mode='markers', name=macro,
-                marker=dict(color=colore, size=10, opacity=0.85, line=dict(color='#071F0C', width=1.5)),
+                marker=dict(color=colore, size=10, opacity=0.85, line=dict(color='#041A1A', width=1.5)),
                 hovertemplate='<b>%{customdata}</b><br>Immatricolati medi: <b>%{x:.0f}</b><br>Prosecuzione: <b>%{y:.1f}%</b><extra></extra>',
                 customdata=sub['label'].values))
     if len(df_tele) > 0:
         fig_corr.add_trace(go.Scatter(x=df_tele['imm_media'], y=df_tele['prosecuzione'], mode='markers', name='Telematiche',
-            marker=dict(color='#F472B6', size=10, opacity=0.85, symbol='diamond', line=dict(color='#071F0C', width=1.5)),
+            marker=dict(color='#F472B6', size=10, opacity=0.85, symbol='diamond', line=dict(color='#041A1A', width=1.5)),
             hovertemplate='<b>%{customdata}</b><br>Immatricolati medi: <b>%{x:.0f}</b><br>Prosecuzione: <b>%{y:.1f}%</b><extra></extra>',
             customdata=df_tele['label'].values))
     if len(x_line) > 0:
@@ -1092,13 +1092,13 @@ elif sezione == "Analisi Avanzata":
         title=dict(text='Correlazione Dimensione Corso vs Tasso di Prosecuzione — L-8', font=dict(size=18, color='#F5F5F7', family='Inter'), x=0.5, xanchor='center'),
         annotations=[dict(x=0.98, y=0.98, xref='paper', yref='paper',
                 text=f'r = {r:.3f} · p = {p:.3f} · n = {len(df_trad)} (tradizionali)',
-                showarrow=False, font=dict(size=12, color='#C8C8C8'), align='right', xanchor='right', bgcolor=BG_CARD, bordercolor='#2D5A3D', borderwidth=1),
+                showarrow=False, font=dict(size=12, color='#C8C8C8'), align='right', xanchor='right', bgcolor=BG_CARD, bordercolor='#2D5A5A', borderwidth=1),
             dict(x=0.99, y=-0.10, xref='paper', yref='paper', text='Fonte: ANVUR iC00b + iC14 · Ogni punto = un corso · Media 2020–2024 · ◆ = Telematiche',
                 showarrow=False, font=dict(size=10, color='#9CA3AF'), xanchor='right')],
         legend=dict(font=dict(color='#C8C8C8'), bgcolor='rgba(0,0,0,0)', x=0.01, y=0.01),
         height=540, margin=dict(t=80, b=80, l=70, r=30))
-    fig_corr.update_xaxes(title=dict(text='Immatricolati medi per anno (2020–2024)', font=dict(color='#C8C8C8')), showgrid=True, gridcolor='#1A3D24', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A3D', rangemode='tozero')
-    fig_corr.update_yaxes(title=dict(text='Tasso prosecuzione al II anno (%)', font=dict(color='#C8C8C8')), showgrid=True, gridcolor='#1A3D24', ticksuffix='%', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A3D')
+    fig_corr.update_xaxes(title=dict(text='Immatricolati medi per anno (2020–2024)', font=dict(color='#C8C8C8')), showgrid=True, gridcolor='#1A3A3A', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A', rangemode='tozero')
+    fig_corr.update_yaxes(title=dict(text='Tasso prosecuzione al II anno (%)', font=dict(color='#C8C8C8')), showgrid=True, gridcolor='#1A3A3A', ticksuffix='%', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A')
     st.plotly_chart(fig_corr, use_container_width=True)
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -1121,8 +1121,8 @@ elif sezione == "Sintesi":
     lau_2010 = int(mur_l_l8[mur_l_l8['AnnoS'] == 2010]['Lau'].sum()) if 2010 in mur_l_l8['AnnoS'].values else 0
     crescita_lau = (lau_2024 - lau_2010) / lau_2010 * 100 if lau_2010 > 0 else 0
     kpi_full = [
-        {'label':'Avvii di carriera 2025','value':f'{avvi_2025:,}','delta':'trend crescita 2020-2025','color':'#4ADE80','bg':'#14532D'},
-        {'label':'Crescita laureati','value':f'+{crescita_lau:.0f}%','delta':'2010 → 2024','color':'#4ADE80','bg':'#14532D'},
+        {'label':'Avvii di carriera 2025','value':f'{avvi_2025:,}','delta':'trend crescita 2020-2025','color':'#2DD4BF'','bg':'#134E4A'},
+        {'label':'Crescita laureati','value':f'+{crescita_lau:.0f}%','delta':'2010 → 2024','color':'#2DD4BF'','bg':'#134E4A'},
         {'label':'Soddisfatti del corso','value':'88.7%','delta':'AlmaLaurea 2025','color':'#34D399','bg':'#064E3B'},
         {'label':'Prosegue magistrale','value':'82.7%','delta':'AlmaLaurea 2025','color':'#34D399','bg':'#064E3B'},
         {'label':'Retribuzione media 2025','value':'€1.327','delta':'+17% vs 2020','color':'#34D399','bg':'#064E3B'},
@@ -1148,12 +1148,12 @@ elif sezione == "Sintesi":
     st.plotly_chart(fig7, use_container_width=True)
     st.markdown("---")
     st.markdown("## Considerazioni principali")
-    st.markdown(f"""<div class="section-card"><p><b style="color:#F5F5F7">Domanda e offerta formativa.</b> In Italia sono <b style="color:#22C55E">{n_atenei} gli atenei</b> che offrono corsi L-8 Ingegneria dell'Informazione, inclusi <b style="color:#22C55E">{len(TELEMATICHE_LIST)} atenei telematici</b>. Gli avvii di carriera al primo anno si attestano a <b style="color:#F5F5F7">{avvi_2025:,}</b> nell'anno accademico 2024/25, in crescita rispetto al periodo post-pandemia.</p></div>""", unsafe_allow_html=True)
+    st.markdown(f"""<div class="section-card"><p><b style="color:#F5F5F7">Domanda e offerta formativa.</b> In Italia sono <b style="color:#14B8A6">{n_atenei} gli atenei</b> che offrono corsi L-8 Ingegneria dell'Informazione, inclusi <b style="color:#14B8A6">{len(TELEMATICHE_LIST)} atenei telematici</b>. Gli avvii di carriera al primo anno si attestano a <b style="color:#F5F5F7">{avvi_2025:,}</b> nell'anno accademico 2024/25, in crescita rispetto al periodo post-pandemia.</p></div>""", unsafe_allow_html=True)
     st.markdown("""<div class="section-card"><p><b style="color:#F5F5F7">Distribuzione geografica.</b> Il <b style="color:#3B82F6">Nord Italia</b> concentra il 50–55% degli avvii di carriera, trainato dai Politecnici di Milano e Torino. Il <b style="color:#10B981">Centro Italia</b> conta 11 atenei attivi con circa il 27% degli avvii, forte grazie a La Sapienza e agli atenei romani. Molise, Valle d'Aosta e Basilicata non ospitano atenei con corsi L-8 attivi.</p></div>""", unsafe_allow_html=True)
-    st.markdown("""<div class="section-card"><p><b style="color:#F5F5F7">Profilo e soddisfazione.</b> L'<b style="color:#34D399">88.7%</b> dei laureati si dichiara soddisfatto del corso (AlmaLaurea 2025), con il <b style="color:#34D399">73.1%</b> che si reiscriverebbe allo stesso corso. La prosecuzione alla magistrale è elevatissima: <b style="color:#F5F5F7">82.7%</b>. La retribuzione media netta mensile è di <b style="color:#22C55E">€1.327</b>.</p></div>""", unsafe_allow_html=True)
-    st.markdown(f"""<div class="section-card"><p><b style="color:#F5F5F7">Tassazione.</b> Il contributo massimo annuo per gli <b style="color:#22C55E">atenei statali</b> varia da <b style="color:#F5F5F7">€{int(tasse[tasse['Tipo']=='Statale']['Contributo max'].min()) if not tasse[tasse['Tipo']=='Statale'].empty else 2100:,}</b> a <b style="color:#F5F5F7">€{int(tasse[tasse['Tipo']=='Statale']['Contributo max'].max()) if not tasse[tasse['Tipo']=='Statale'].empty else 4538:,}</b>, con una media di circa <b style="color:#F5F5F7">€{int(tasse[tasse['Tipo']=='Statale']['Contributo max'].mean()) if not tasse[tasse['Tipo']=='Statale'].empty else 3065:,}</b>. Gli atenei <b style="color:#EF4444">non statali</b> si collocano significativamente al di sopra, con il Campus Bio-Medico a €6.640.</p></div>""", unsafe_allow_html=True)
-    st.markdown("""<div class="section-card"><p><b style="color:#F5F5F7">Percorso accademico.</b> In media il <b style="color:#22C55E">68–70%</b> degli immatricolati prosegue nello stesso corso al secondo anno (iC14), con variazioni tra famiglie di corso. Le <b style="color:#F59E0B">università telematiche</b> mostrano tassi di prosecuzione strutturalmente inferiori rispetto alle tradizionali.</p></div>""", unsafe_allow_html=True)
-    st.markdown("""<div class="section-card" style="border-top: 3px solid #22C55E;">
+    st.markdown("""<div class="section-card"><p><b style="color:#F5F5F7">Profilo e soddisfazione.</b> L'<b style="color:#34D399">88.7%</b> dei laureati si dichiara soddisfatto del corso (AlmaLaurea 2025), con il <b style="color:#34D399">73.1%</b> che si reiscriverebbe allo stesso corso. La prosecuzione alla magistrale è elevatissima: <b style="color:#F5F5F7">82.7%</b>. La retribuzione media netta mensile è di <b style="color:#14B8A6">€1.327</b>.</p></div>""", unsafe_allow_html=True)
+    st.markdown(f"""<div class="section-card"><p><b style="color:#F5F5F7">Tassazione.</b> Il contributo massimo annuo per gli <b style="color:#14B8A6">atenei statali</b> varia da <b style="color:#F5F5F7">€{int(tasse[tasse['Tipo']=='Statale']['Contributo max'].min()) if not tasse[tasse['Tipo']=='Statale'].empty else 2100:,}</b> a <b style="color:#F5F5F7">€{int(tasse[tasse['Tipo']=='Statale']['Contributo max'].max()) if not tasse[tasse['Tipo']=='Statale'].empty else 4538:,}</b>, con una media di circa <b style="color:#F5F5F7">€{int(tasse[tasse['Tipo']=='Statale']['Contributo max'].mean()) if not tasse[tasse['Tipo']=='Statale'].empty else 3065:,}</b>. Gli atenei <b style="color:#EF4444">non statali</b> si collocano significativamente al di sopra, con il Campus Bio-Medico a €6.640.</p></div>""", unsafe_allow_html=True)
+    st.markdown("""<div class="section-card"><p><b style="color:#F5F5F7">Percorso accademico.</b> In media il <b style="color:#14B8A6">68–70%</b> degli immatricolati prosegue nello stesso corso al secondo anno (iC14), con variazioni tra famiglie di corso. Le <b style="color:#F59E0B">università telematiche</b> mostrano tassi di prosecuzione strutturalmente inferiori rispetto alle tradizionali.</p></div>""", unsafe_allow_html=True)
+    st.markdown("""<div class="section-card" style="border-top: 3px solid #14B8A6;">
     <p><b style="color:#F5F5F7">Il sistema L-8 Ingegneria dell'Informazione</b> mostra un quadro articolato: domanda in crescita nel quinquennio 2020–2025, elevata soddisfazione dei laureati e forte propensione alla prosecuzione magistrale. Un aspetto da monitorare è il divario tra atenei tradizionali e telematici, sia in termini di prosecuzione che di sbocchi lavorativi.</p>
     <p style="color:#C8C8C8; font-size:0.82rem; margin-top:1.5rem;">Analisi basata su dati MUR-USTAT, ANVUR AVA2 e AlmaLaurea · Periodo di riferimento: 2010–2025 · Elaborazione: Centro Studi</p>
     </div>""", unsafe_allow_html=True)
