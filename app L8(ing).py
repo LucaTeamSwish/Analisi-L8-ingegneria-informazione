@@ -1095,7 +1095,7 @@ elif sezione == "Analisi Avanzata":
                 showarrow=False, font=dict(size=12, color='#C8C8C8'), align='right', xanchor='right', bgcolor=BG_CARD, bordercolor='#2D5A5A', borderwidth=1),
             dict(x=0.99, y=-0.10, xref='paper', yref='paper', text='Fonte: ANVUR iC00b + iC14 · Ogni punto = un corso · Media 2020–2024 · ◆ = Telematiche',
                 showarrow=False, font=dict(size=10, color='#9CA3AF'), xanchor='right')],
-        legend=dict(font=dict(color='#C8C8C8'), bgcolor='rgba(0,0,0,0)', x=0.01, y=0.01),
+        legend=dict(font=dict(color='#C8C8C8'), bgcolor='rgba(0,0,0,0)', x=0.99, y=0.01, xanchor='right'),
         height=540, margin=dict(t=80, b=80, l=70, r=30))
     fig_corr.update_xaxes(title=dict(text='Immatricolati medi per anno (2020–2024)', font=dict(color='#C8C8C8')), showgrid=True, gridcolor='#1A3A3A', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A', rangemode='tozero')
     fig_corr.update_yaxes(title=dict(text='Tasso prosecuzione al II anno (%)', font=dict(color='#C8C8C8')), showgrid=True, gridcolor='#1A3A3A', ticksuffix='%', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A')
