@@ -1050,7 +1050,7 @@ elif sezione == "Analisi Avanzata":
 
     # G16 — Scatter correlazione
     chart_header("Correlazione tra dimensione del corso e tasso di prosecuzione",
-        "L'analisi mette in relazione il numero medio di immatricolati puri per corso (2020–2024) con il tasso di prosecuzione al II anno (iC14 ANVUR). I corsi telematici (◆ rosa) sono separati dalla regressione lineare sui soli corsi tradizionali.",
+        "Ogni punto rappresenta un corso presso un ateneo. L'asse orizzontale mostra la dimensione media del corso (immatricolati puri), quello verticale il tasso di prosecuzione al II anno (iC14 ANVUR). La linea tratteggiata è la retta di regressione calcolata sui soli corsi tradizionali. I rombi rosa (◆) sono i corsi telematici, esclusi dalla regressione.",
         "Passa il cursore sui punti per vedere il nome del corso e dell'ateneo.")
     imm_corso = ic00b[ic00b['Anno accademico']<=2024].groupby(['Ateneo','Nome Corso'])['Numeratore'].mean().reset_index()
     imm_corso.columns = ['Ateneo','Nome Corso','imm_media']
