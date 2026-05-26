@@ -19,7 +19,7 @@ st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 :root {
-    --bg-primary: #051A0A; --bg-secondary: #0A2010; --bg-card: #0F2D16; --bg-card-hover: #102D14;
+    --bg-primary: #071F0C; --bg-secondary: #0D2814; --bg-card: #122F18; --bg-card-hover: #102D14;
     --border: rgba(255,255,255,0.08); --border-accent: rgba(34,197,94,0.4);
     --text-primary: #F5F5F7;
     --text-secondary: #C8C8C8;
@@ -64,9 +64,9 @@ footer { visibility: hidden; }
 """, unsafe_allow_html=True)
 
 # ── COSTANTI ──────────────────────────────────────────────────────────────────
-BG_PLOT   = '#0A2010'
-BG_PAPER  = '#0A2010'
-BG_CARD   = '#0F2D16'
+BG_PLOT   = '#0D2814'
+BG_PAPER  = '#0D2814'
+BG_CARD   = '#122F18'
 VERDE_MAIN  = '#22C55E'
 VERDE_LIGHT = '#86EFAC'
 # Colori macro aree identici a L-2: Nord=blu, Centro=verde teal, Sud=arancio, Isole=viola
@@ -422,7 +422,7 @@ elif sezione == "Iscritti":
             hovers.append(f"<b>{row['corso_nome']}</b><br>Avvii: <b>{int(row['avvii']):,}</b><br>N° atenei: <b>{row['n_atenei']}</b>")
         fig_tree.add_trace(go.Treemap(labels=labels, parents=parents, values=values, customdata=hovers,
             hovertemplate='%{customdata}<extra></extra>', branchvalues='total',
-            marker=dict(colors=colors, line=dict(color='#051A0A', width=2)),
+            marker=dict(colors=colors, line=dict(color='#071F0C', width=2)),
             textfont=dict(size=13, color='white', family='Inter'),
             pathbar=dict(visible=True, thickness=24, textfont=dict(size=12, color='white', family='Inter')),
             visible=(i == 0)))
@@ -468,11 +468,11 @@ elif sezione == "Iscritti":
             z=subset['avvii'], colorscale=[[0.0,'#D4F1D4'],[0.25,'#86EFAC'],[0.5,'#4ADE80'],[0.75,'#16A34A'],[1.0,'#14532D']],
             zmin=df_mappa['avvii'].min(), zmax=df_mappa['avvii'].max(),
             colorbar=dict(title=dict(text='Avvii', font=dict(color='#C8C8C8')), tickfont=dict(color='#C8C8C8'), x=1.0, thickness=15),
-            marker_line_color='#051A0A', marker_line_width=1.5,
+            marker_line_color='#071F0C', marker_line_width=1.5,
             text=subset['hover'], hovertemplate='%{text}<extra></extra>', name=str(anno), visible=(i==0)))
         fig_map.add_trace(go.Choropleth(geojson=GEOJSON_URL, locations=GRIGIO_SCURO, featureidkey='properties.reg_name',
             z=[0]*len(GRIGIO_SCURO), colorscale=[[0,'#3A3A3A'],[1,'#3A3A3A']], showscale=False,
-            marker_line_color='#051A0A', marker_line_width=1.5,
+            marker_line_color='#071F0C', marker_line_width=1.5,
             hovertemplate='<b>%{location}</b><br>Nessun corso L-8 attivo<extra></extra>',
             visible=(i==0), showlegend=False))
     n_layers = 2
@@ -570,7 +570,7 @@ elif sezione == "Iscritti":
         fig_lazio.add_trace(go.Scatter(x=df_lab['Anno accademico'].astype(str), y=df_lab['Numeratore'],
             mode='lines+markers', name=nome, legendgroup='trad',
             legendgrouptitle=dict(text='Tradizionali', font=dict(color='#86EFAC', size=12)),
-            line=dict(color=colore, width=2.5), marker=dict(size=8, color=colore, line=dict(color='#051A0A', width=1.5)),
+            line=dict(color=colore, width=2.5), marker=dict(size=8, color=colore, line=dict(color='#071F0C', width=1.5)),
             text=df_lab['hover'], hovertemplate='%{text}<extra></extra>'), row=1, col=1)
         ultimo = df_lab.iloc[-1]
         fig_lazio.add_annotation(x=str(int(ultimo['Anno accademico'])), y=ultimo['Numeratore'],
@@ -582,7 +582,7 @@ elif sezione == "Iscritti":
         fig_lazio.add_trace(go.Scatter(x=df_lab['Anno accademico'].astype(str), y=df_lab['Numeratore'],
             mode='lines+markers', name=nome, legendgroup='tele',
             legendgrouptitle=dict(text='Telematiche', font=dict(color='#FCD34D', size=12)),
-            line=dict(color=colore, width=2.5), marker=dict(size=8, color=colore, line=dict(color='#051A0A', width=1.5)),
+            line=dict(color=colore, width=2.5), marker=dict(size=8, color=colore, line=dict(color='#071F0C', width=1.5)),
             text=df_lab['hover'], hovertemplate='%{text}<extra></extra>'), row=1, col=2)
         ultimo = df_lab.iloc[-1]
         fig_lazio.add_annotation(x=str(int(ultimo['Anno accademico'])), y=ultimo['Numeratore'],
@@ -620,7 +620,7 @@ elif sezione == "Iscritti":
         fig_bubble.add_trace(go.Scatter(x=subset['Anno accademico'].astype(str), y=subset['pct_offset'],
             mode='markers+text', name=macro,
             marker=dict(size=subset['Numeratore']/macro_pct['Numeratore'].max()*80+20,
-                color=COLORI_MACRO[macro], opacity=0.85, line=dict(color='#051A0A', width=2)),
+                color=COLORI_MACRO[macro], opacity=0.85, line=dict(color='#071F0C', width=2)),
             text=subset['pct'].apply(lambda x: f'{x:.1f}%'), textposition='middle center',
             textfont=dict(size=10, color='white', family='Inter'),
             customdata=list(zip(subset['pct'], subset['Numeratore'].astype(int))),
@@ -727,13 +727,13 @@ elif sezione == "Profilo Studenti":
         for col, colore in DEST_PLOT.items():
             if col == 'Altro':
                 fig_dest.add_trace(go.Bar(x=df_dest2['anno'], y=df_dest2[col], name=col,
-                    marker=dict(color=colore, line=dict(color='#051A0A', width=1), opacity=0.92),
+                    marker=dict(color=colore, line=dict(color='#071F0C', width=1), opacity=0.92),
                     text=df_dest2[col].apply(lambda x: f'{x:.1f}%'), textposition='inside',
                     textfont=dict(size=11, color='white', family='Inter'),
                     customdata=df_dest2['hover_altro'], hovertemplate='%{customdata}<extra></extra>'))
             else:
                 fig_dest.add_trace(go.Bar(x=df_dest2['anno'], y=df_dest2[col], name=col,
-                    marker=dict(color=colore, line=dict(color='#051A0A', width=1), opacity=0.92),
+                    marker=dict(color=colore, line=dict(color='#071F0C', width=1), opacity=0.92),
                     text=df_dest2[col].apply(lambda x: f'{x:.1f}%'), textposition='inside',
                     textfont=dict(size=11, color='white', family='Inter'),
                     hovertemplate=f'<b>{col}</b><br>Anno %{{x}}<br><b>%{{y:.1f}}%</b><extra></extra>'))
@@ -800,7 +800,7 @@ elif sezione == "Percorso Accademico":
         row = df_destino[df_destino['anno']==anno].iloc[0]
         fig_donut.add_trace(go.Pie(labels=['Proseguono nello stesso corso','Cambiano corso o ateneo',"Lasciano l'università"],
             values=[row['prosegue_stesso'], row['cambia_corso'], row['abbandona']], hole=0.60,
-            marker=dict(colors=['#22C55E','#F59E0B','#F87171'], line=dict(color='#051A0A', width=3)),
+            marker=dict(colors=['#22C55E','#F59E0B','#F87171'], line=dict(color='#071F0C', width=3)),
             textinfo='percent', textposition='outside', textfont=dict(size=13, color='#F5F5F7', family='Inter'),
             hovertemplate='<b>%{label}</b><br><b>%{value:.1f}%</b> degli immatricolati puri<extra></extra>',
             visible=(i==0), sort=False, pull=[0.03,0.03,0.03]))
@@ -1077,12 +1077,12 @@ elif sezione == "Analisi Avanzata":
         sub = df_trad[df_trad['macro']==macro]
         if len(sub) > 0:
             fig_corr.add_trace(go.Scatter(x=sub['imm_media'], y=sub['prosecuzione'], mode='markers', name=macro,
-                marker=dict(color=colore, size=10, opacity=0.85, line=dict(color='#051A0A', width=1.5)),
+                marker=dict(color=colore, size=10, opacity=0.85, line=dict(color='#071F0C', width=1.5)),
                 hovertemplate='<b>%{customdata}</b><br>Immatricolati medi: <b>%{x:.0f}</b><br>Prosecuzione: <b>%{y:.1f}%</b><extra></extra>',
                 customdata=sub['label'].values))
     if len(df_tele) > 0:
         fig_corr.add_trace(go.Scatter(x=df_tele['imm_media'], y=df_tele['prosecuzione'], mode='markers', name='Telematiche',
-            marker=dict(color='#F472B6', size=10, opacity=0.85, symbol='diamond', line=dict(color='#051A0A', width=1.5)),
+            marker=dict(color='#F472B6', size=10, opacity=0.85, symbol='diamond', line=dict(color='#071F0C', width=1.5)),
             hovertemplate='<b>%{customdata}</b><br>Immatricolati medi: <b>%{x:.0f}</b><br>Prosecuzione: <b>%{y:.1f}%</b><extra></extra>',
             customdata=df_tele['label'].values))
     if len(x_line) > 0:
