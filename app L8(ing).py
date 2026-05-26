@@ -329,7 +329,7 @@ if sezione == "Panoramica":
     n_atenei = df['Ateneo'].nunique()
     kpi = [
         {'label': 'Avvii di carriera 2025', 'value': f'{avvi_2025:,}', 'delta': '↑ trend crescita', 'color': '#14B8A6'},
-        {'label': 'Atenei attivi L-8',      'value': str(n_atenei),    'delta': 'incluse telematiche', 'color': '#2DD4BF''},
+        {'label': 'Atenei attivi L-8',      'value': str(n_atenei),    'delta': 'incluse telematiche', 'color': '#2DD4BF'},
         {'label': 'Soddisfatti del corso',  'value': '88.7%',          'delta': 'AlmaLaurea 2025',    'color': '#F59E0B'},
         {'label': 'Prosegue magistrale',    'value': '82.7%',          'delta': 'AlmaLaurea 2025',    'color': '#34D399'},
     ]
