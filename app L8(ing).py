@@ -832,8 +832,11 @@ elif sezione == "Percorso Accademico":
     chart_header("% Laureati entro la durata normale del corso — iC02",
         "Percentuale media nazionale di studenti L-8 che si laureano entro i tempi standard previsti dal corso. Il dato più recente è evidenziato in verde chiaro.",
         "Passa il cursore sulle barre per vedere il valore esatto per anno.")
-    ic02_clean = ic02[ic02['Numeratore'] <= 100].copy()
-    ic02_naz = ic02_clean.groupby('Anno accademico')['Numeratore'].mean().reset_index()
+    df_ic02 = pd.read_csv('IC02(L8)PENTAHO.csv', sep=',', encoding='utf-8')
+    df_ic02['Numeratore'] = pd.to_numeric(df_ic02['Numeratore'].astype(str).str.replace('.000','',regex=False), errors='coerce')
+    df_ic02['Denominatore'] = pd.to_numeric(df_ic02['Denominatore'].astype(str).str.replace('.000','',regex=False), errors='coerce')
+    df_ic02['pct'] = df_ic02['Numeratore'] / df_ic02['Denominatore'] * 100
+    ic02_naz = df_ic02.groupby('Anno accademico')['pct'].mean().reset_index()
     ic02_naz.columns = ['anno','pct']
     ic02_naz['pct'] = ic02_naz['pct'].round(1)
     media_ic02 = ic02_naz['pct'].mean()
