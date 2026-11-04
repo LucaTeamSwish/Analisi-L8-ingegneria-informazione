@@ -646,7 +646,7 @@ elif sezione == "Iscritti":
     st.markdown("---")
 
     # G7 — Lollipop iscritti
-    chart_header("Iscritti L-8 Ingegneria dell'Informazione — Italia (2019–2025)",
+    chart_header("Iscritti L-8 Ingegneria dell'Informazione — Italia (2019/20–2025/26)",
         "Numero totale di studenti iscritti a corsi L-8 Ingegneria dell'Informazione in Italia per anno accademico.",
         "Passa il cursore sui pallini per vedere il valore esatto.")
     isc_naz = mur_i_l8.groupby('AnnoA')['Isc'].sum().reset_index()
@@ -667,7 +667,7 @@ elif sezione == "Iscritti":
     fig_isc.add_trace(go.Scatter(x=[None], y=[None], mode='lines',
         line=dict(color='#F59E0B', width=2, dash='dash'), name=f'Media periodo: {media_isc:,.0f}', showlegend=True))
     fig_isc.update_layout(font=dict(family='Inter', size=12), plot_bgcolor=BG_PLOT, paper_bgcolor=BG_PAPER,
-        title=dict(text="Iscritti L-8 Ingegneria dell'Informazione — Italia (2019–2025)", font=dict(size=18, color='#F5F5F7', family='Inter'), x=0.5, xanchor='center'),
+        title=dict(text="Iscritti L-8 Ingegneria dell'Informazione — Italia (2019/20–2025/26)", font=dict(size=18, color='#F5F5F7', family='Inter'), x=0.5, xanchor='center'),
         showlegend=True, legend=dict(font=dict(color='#C8C8C8', size=11), bgcolor='rgba(0,0,0,0)', orientation='h', x=0.5, xanchor='center', y=1.08),
         margin=dict(t=100, b=80, l=70, r=100), height=520,
         annotations=[fonte_ann('Fonte: MUR-USTAT — Iscritti L-8 per anno accademico')])
