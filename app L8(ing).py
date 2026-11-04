@@ -244,6 +244,7 @@ def prep_indicatori(df):
     return ic14, ic21, ic00b, ic02, merge14, merge14_var, df_destino, ic16_naz
 
 df, mur_l_l8, mur_i_l8, tasse = load_data()
+ANNO_LAU = int(mur_l_l8['AnnoS'].max())  # ultimo anno solare disponibile nei laureati MUR
 ic14, ic21, ic00b, ic02, merge14, merge14_var, df_destino, ic16_naz = prep_indicatori(df)
 
 anni_alma = [2020, 2021, 2022, 2023, 2024, 2025]
@@ -770,7 +771,7 @@ elif sezione == "Percorso Accademico":
     st.markdown("---")
 
     # G10 — Laureati
-    chart_header("Laureati L-8 Ingegneria dell'Informazione — Italia (2010–2024)",
+    chart_header(f"Laureati L-8 Ingegneria dell'Informazione — Italia (2010–{ANNO_LAU})",
         "Numero totale di laureati per anno solare. Le barre rosse corrispondono agli anni 2020 e 2021, durante i quali le sessioni di laurea hanno subito variazioni legate all'emergenza sanitaria.",
         "Passa il cursore sulle barre per vedere il valore esatto.")
     lau_naz = mur_l_l8.groupby('AnnoS')['Lau'].sum().reset_index()
@@ -787,10 +788,10 @@ elif sezione == "Percorso Accademico":
         textposition='outside', textfont=dict(size=10, color='#F5F5F7', family='Inter'),
         hovertemplate='<b>%{x}</b><br>Laureati: <b>%{y:,.0f}</b><extra></extra>', showlegend=False))
     fig_lau.update_layout(font=dict(family='Inter', size=12), plot_bgcolor=BG_PLOT, paper_bgcolor=BG_PAPER,
-        title=dict(text="Laureati L-8 Ingegneria dell'Informazione — Italia (2010–2024)", font=dict(size=18, color='#F5F5F7', family='Inter'), x=0.5, xanchor='center'),
+        title=dict(text=f"Laureati L-8 Ingegneria dell'Informazione — Italia (2010–{ANNO_LAU})", font=dict(size=18, color='#F5F5F7', family='Inter'), x=0.5, xanchor='center'),
         showlegend=False,
         annotations=[dict(x=0.01, y=0.97, xref='paper', yref='paper',
-                text=f"<b style='color:#14B8A6'>+{crescita:.0f}%</b><span style='color:#C8C8C8'> dal 2010 al 2024</span>",
+                text=f"<b style='color:#14B8A6'>+{crescita:.0f}%</b><span style='color:#C8C8C8'> dal 2010 al {ANNO_LAU}</span>",
                 showarrow=False, font=dict(size=13, family='Inter'), align='left'),
             fonte_ann('Fonte: MUR-USTAT — Laureati L-8 per anno solare')],
         margin=dict(t=100, b=80, l=60, r=30), height=500)
@@ -1128,14 +1129,14 @@ elif sezione == "Sintesi":
     except:
         iscritti_2025 = int(mur_i_l8.groupby('AnnoA')['Isc'].sum().iloc[-1])
     try:
-        lau_2024 = int(mur_l_l8[mur_l_l8['AnnoS'] == 2024]['Lau'].sum())
+        lau_2024 = int(mur_l_l8[mur_l_l8['AnnoS'] == ANNO_LAU]['Lau'].sum())
     except:
         lau_2024 = int(mur_l_l8.groupby('AnnoS')['Lau'].sum().iloc[-1])
     lau_2010 = int(mur_l_l8[mur_l_l8['AnnoS'] == 2010]['Lau'].sum()) if 2010 in mur_l_l8['AnnoS'].values else 0
     crescita_lau = (lau_2024 - lau_2010) / lau_2010 * 100 if lau_2010 > 0 else 0
     kpi_full = [
         {'label':'Avvii di carriera 2025','value':f'{avvi_2025:,}','delta':'trend crescita 2020-2025','color':'#2DD4BF','bg':'#134E4A'},
-        {'label':'Crescita laureati','value':f'+{crescita_lau:.0f}%','delta':'2010 → 2024','color':'#2DD4BF','bg':'#134E4A'},
+        {'label':'Crescita laureati','value':f'+{crescita_lau:.0f}%','delta':f'2010 → {ANNO_LAU}','color':'#2DD4BF','bg':'#134E4A'},
         {'label':'Soddisfatti del corso','value':'88.7%','delta':'AlmaLaurea 2025','color':'#34D399','bg':'#064E3B'},
         {'label':'Prosegue magistrale','value':'82.7%','delta':'AlmaLaurea 2025','color':'#34D399','bg':'#064E3B'},
         {'label':'Retribuzione media 2025','value':'€1.327','delta':'+17% vs 2020','color':'#34D399','bg':'#064E3B'},
