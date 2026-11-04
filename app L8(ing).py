@@ -166,6 +166,16 @@ MACRO_FAMIGLIE = {
     'Ingegneria Cibernetica': 'Automazione',
     "Ingegneria Dell'Informazione": 'Informazione',
     "Ingegneria Dell' Informazione: Elettronica, Informatica E Telecomunicazioni": 'Informazione',
+    # corsi rinominati / nuovi nell'export Pentaho nov 2026
+    'Biomedical Engineering': 'Biomedica',
+    "Ingegneria Dell'Automazione E Robotica": 'Automazione',
+    "Ingegneria Dell'Intelligenza Artificiale": 'Informatica',
+    'Ingegneria Informatica E Intelligenza Artificiale': 'Informatica',
+    'Ingegneria Delle Tecnologie Per L’Elettronica E L’Automazione': 'Elettronica',
+    "Ingegneria Elettronica E Dell'Informazione": 'Elettronica',
+    'Information Engineering': 'Informazione',
+    'Engineering Management': 'Gestionale',
+    'Biotech Engineering For Health': 'Biomedica',
 }
 MACRO_FAMIGLIE_CLEAN = {k: ('Multidisciplinare' if v in ['Altro', 'Multidisciplinare'] else v) for k, v in MACRO_FAMIGLIE.items()}
 COLORI_FAMIGLIE = {
@@ -180,7 +190,7 @@ COLORI_FAMIGLIE = {
 def load_data():
     df = pd.read_csv('PENTAHO(L8).csv', sep=',', encoding='latin-1', quotechar='"', on_bad_lines='skip')
     df['Ateneo'] = df['Ateneo'].str.encode('latin-1').str.decode('utf-8', errors='replace')
-    df['Numeratore'] = df['Numeratore'].astype(str).str.replace('.000', '', regex=False).str.replace(',', '.', regex=False)
+    df['Numeratore'] = df['Numeratore'].astype(str).str.replace(',', '', regex=False)  # "1,030.000" -> 1030
     df['Numeratore'] = pd.to_numeric(df['Numeratore'], errors='coerce')
     df['corso_nome'] = (df['Nome Corso'].str.split(' - ', n=1).str[1].str.strip()
         .str.encode('latin-1', errors='replace').str.decode('utf-8', errors='replace')
@@ -833,8 +843,8 @@ elif sezione == "Percorso Accademico":
         "Percentuale media nazionale di studenti L-8 che si laureano entro i tempi standard previsti dal corso. Il dato più recente è evidenziato in verde chiaro.",
         "Passa il cursore sulle barre per vedere il valore esatto per anno.")
     df_ic02 = pd.read_csv('IC02(L8)PENTAHO.csv', sep=',', encoding='utf-8')
-    df_ic02['Numeratore'] = pd.to_numeric(df_ic02['Numeratore'].astype(str).str.replace('.000','',regex=False), errors='coerce')
-    df_ic02['Denominatore'] = pd.to_numeric(df_ic02['Denominatore'].astype(str).str.replace('.000','',regex=False), errors='coerce')
+    df_ic02['Numeratore'] = pd.to_numeric(df_ic02['Numeratore'].astype(str).str.replace(',','',regex=False), errors='coerce')
+    df_ic02['Denominatore'] = pd.to_numeric(df_ic02['Denominatore'].astype(str).str.replace(',','',regex=False), errors='coerce')
     df_ic02['pct'] = df_ic02['Numeratore'] / df_ic02['Denominatore'] * 100
     ic02_naz = df_ic02.groupby('Anno accademico')['pct'].mean().reset_index()
     ic02_naz.columns = ['anno','pct']
