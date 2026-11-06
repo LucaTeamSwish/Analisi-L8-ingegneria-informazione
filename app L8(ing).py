@@ -71,6 +71,10 @@ footer { visibility: hidden; }
 .kpi-label { font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; }
 .kpi-value { font-size: 2rem; font-weight: 700; color: var(--accent-green); line-height: 1.1; }
 .kpi-sub { font-size: 0.75rem; color: #9CA3AF; margin-top: 0.2rem; }
+/* Pulsanti Plotly: il pulsante attivo (e quello in hover) diventa verde con testo scuro leggibile */
+.js-plotly-plot .updatemenu-button rect[style*="rgb(244, 250, 255)"] { fill: #14B8A6 !important; stroke: #14B8A6 !important; }
+.js-plotly-plot .updatemenu-button:has(rect[style*="rgb(244, 250, 255)"]) text { fill: #062A2A !important; font-weight: 700 !important; }
+.js-plotly-plot .updatemenu-button { cursor: pointer; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -697,42 +701,45 @@ elif sezione == "Profilo Studenti":
     st.markdown("## Profilo Studenti")
     st.markdown("---")
 
-    # G8 — Gauge
+    # G8 — Gauge: il valore dell'anno di riferimento è scritto accanto alla linea arancione (etichetta sulla scala)
     chart_header("Indicatori chiave del profilo laureati L-8",
-        "I tre indicatori riportano i valori del 2025 confrontati con un anno di riferimento selezionabile. I dati provengono dall'indagine AlmaLaurea sul Profilo dei Laureati.",
+        "I tre indicatori riportano i valori del 2025 confrontati con un anno di riferimento selezionabile. La linea arancione indica il valore dell'anno di riferimento, riportato accanto in arancione. Dati AlmaLaurea, indagine sul Profilo dei Laureati.",
         "Seleziona l'anno di riferimento per il confronto con i pulsanti in alto.")
-    val_2025 = {'pct_soddisfatti': 88.7, 'pct_riiscrizione': 73.1, 'pct_magistrale': 82.7}
+    anno_ult_alma = int(alma_profilo['anno'].max())
+    val_ult = alma_profilo[alma_profilo['anno']==anno_ult_alma].iloc[0]
     indicatori_gauge = [('pct_soddisfatti','Soddisfatti del corso','#14B8A6'),('pct_riiscrizione','Si reiscriverebbero','#60A5FA'),('pct_magistrale','Prosegue magistrale','#C084FC')]
-    anni_ref = [2020,2021,2022,2023,2024]
+    anni_ref = [a for a in alma_profilo['anno'] if a != anno_ult_alma]
+    anno_ref_def = anni_ref[-1]
     fig_gauge = go.Figure()
     for anno_ref in anni_ref:
-        visible = (anno_ref == 2024)
+        visible = (anno_ref == anno_ref_def)
         for col_idx, (col, titolo, colore) in enumerate(indicatori_gauge):
             val_ref = float(alma_profilo[alma_profilo['anno']==anno_ref][col].values[0])
-            fig_gauge.add_trace(go.Indicator(mode='gauge+number+delta', value=val_2025[col],
-                delta={'reference': val_ref, 'suffix': '%', 'relative': False, 'valueformat': '.1f', 'increasing': {'color':'#14B8A6'}, 'decreasing': {'color':'#F87171'}},
-                number={'suffix':'%','font':{'size':40,'color':colore}},
-                title={'text':f"<b style='color:#F5F5F7'>{titolo}</b><br><span style='font-size:11px;color:#9CA3AF'>2025 vs {anno_ref}</span>"},
-                gauge={'axis':{'range':[0,100],'ticksuffix':'%','tickfont':{'color':'#9CA3AF'},'tickcolor':'#9CA3AF'},
+            # scala 0–100 + etichetta arancione sul valore di riferimento (si toglie la tacca troppo vicina)
+            tick_v = [t for t in range(0, 101, 20) if abs(t - val_ref) >= 9] + [val_ref]
+            tick_t = [f'{t}%' for t in tick_v[:-1]] + [f"<b><span style='color:#F59E0B'>{fmt(val_ref,1)}%</span></b><br><span style='color:#F59E0B'>{anno_ref}</span>"]
+            fig_gauge.add_trace(go.Indicator(mode='gauge+number+delta', value=float(val_ult[col]),
+                delta={'reference': val_ref, 'suffix': ' p.p.', 'relative': False, 'valueformat': '.1f', 'increasing': {'color':'#14B8A6'}, 'decreasing': {'color':'#F87171'}},
+                number={'suffix':'%','font':{'color':colore}, 'valueformat': '.1f'},   # dimensione automatica: si adatta alla larghezza
+                title={'text':f"<b style='color:#F5F5F7'>{titolo}</b><br><span style='font-size:11px;color:#9CA3AF'>{anno_ult_alma} vs {anno_ref}</span>", 'font':{'size':13}},
+                gauge={'axis':{'range':[0,100],'tickmode':'array','tickvals':tick_v,'ticktext':tick_t,'tickfont':{'color':'#9CA3AF','size':11},'tickcolor':'#9CA3AF'},
                     'bar':{'color':colore,'thickness':0.25},'bgcolor':BG_CARD,'borderwidth':0,
                     'steps':[{'range':[0,50],'color':BG_PLOT},{'range':[50,75],'color':'#133A3A'},{'range':[75,100],'color':'#1A4040'}],
                     'threshold':{'line':{'color':'#F59E0B','width':3},'thickness':0.75,'value':val_ref}},
-                domain={'x':[0.03+col_idx*0.35, 0.03+col_idx*0.35+0.24],'y':[0,1]}, visible=visible))
+                domain={'x':[0.025+col_idx*0.35, 0.025+col_idx*0.35+0.25],'y':[0,1]}, visible=visible))
     n_per_anno = len(indicatori_gauge)
     buttons_gauge = []
     for i, anno_ref in enumerate(anni_ref):
         vis = []
         for j in range(len(anni_ref)): vis += [j==i]*n_per_anno
         buttons_gauge.append(dict(label=f'vs {anno_ref}', method='update',
-            args=[{'visible': vis}, {'title': dict(text=f'Profilo laureati L-8 — 2025 vs {anno_ref}', font=dict(size=20, color='#F5F5F7', family='Inter'), x=0.5, xanchor='center')}]))
-    fig_gauge.update_layout(title=dict(text='Profilo Laureati L-8 — 2025 vs 2024', font=dict(size=20, color='#F5F5F7', family='Inter'), x=0.5, xanchor='center'),
+            args=[{'visible': vis}, {'title': dict(text=f'Profilo Laureati L-8 — {anno_ult_alma} vs {anno_ref}', font=dict(size=20, color='#F5F5F7', family='Inter'), x=0.5, xanchor='center')}]))
+    fig_gauge.update_layout(title=dict(text=f'Profilo Laureati L-8 — {anno_ult_alma} vs {anno_ref_def}', font=dict(size=20, color='#F5F5F7', family='Inter'), x=0.5, xanchor='center'),
         updatemenus=[dict(type='buttons', direction='right', x=0.5, xanchor='center', y=1.55, yanchor='top',
             buttons=buttons_gauge, bgcolor=BG_CARD, bordercolor=VERDE_MAIN, borderwidth=1,
             font=dict(size=12, family='Inter', color='#F5F5F7'), active=len(anni_ref)-1, pad=dict(r=6,l=6,t=6,b=6))],
-        height=420, margin=dict(t=195, b=60, l=30, r=30), font=dict(family='Inter', size=12), paper_bgcolor=BG_PAPER,
-        annotations=[dict(x=0.5, y=-0.12, xref='paper', yref='paper', text="La linea arancione indica il valore dell'anno di riferimento selezionato",
-                showarrow=False, font=dict(size=11, color='#9CA3AF'), align='center'),
-            fonte_ann('Fonte: AlmaLaurea — Profilo dei Laureati L-8')])
+        height=430, margin=dict(t=195, b=50, l=40, r=40), font=dict(family='Inter', size=12), paper_bgcolor=BG_PAPER,
+        annotations=[fonte_ann('Fonte: AlmaLaurea — Profilo dei Laureati L-8 · Differenze in punti percentuali (p.p.)', shift=-20)])
     st.plotly_chart(fig_gauge, use_container_width=True)
     st.markdown("---")
 
