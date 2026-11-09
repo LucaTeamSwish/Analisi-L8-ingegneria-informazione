@@ -359,7 +359,7 @@ if sezione == "Panoramica":
         {'label': 'Avvii di carriera 2025/26', 'value': fmt(avvi_2025), 'delta': '↑ trend crescita', 'color': '#14B8A6'},
         {'label': 'Atenei attivi L-8',      'value': str(n_atenei),    'delta': 'incluse telematiche', 'color': '#2DD4BF'},
         {'label': 'Soddisfatti del corso',  'value': '88,7%',          'delta': 'AlmaLaurea 2025',    'color': '#F59E0B'},
-        {'label': 'Prosegue magistrale',    'value': '82,7%',          'delta': 'AlmaLaurea 2025',    'color': '#34D399'},
+        {'label': 'Intende proseguire (LM)', 'value': '82,7%',          'delta': 'AlmaLaurea 2025',    'color': '#34D399'},
     ]
     cols = st.columns(4)
     for col, k in zip(cols, kpi):
@@ -373,7 +373,7 @@ if sezione == "Panoramica":
     st.markdown("### Struttura dell'analisi")
     sezioni_info = [
         ("Iscritti", "Avvii di carriera al primo anno, distribuzione geografica, top atenei, focus sul Lazio e totale iscritti.", "#14B8A6"),
-        ("Profilo Studenti", "Soddisfazione, riiscrizione e destinazione alla magistrale.", "#2DD4BF'"),
+        ("Profilo Studenti", "Soddisfazione, riiscrizione e intenzione di proseguire alla magistrale.", "#2DD4BF"),
         ("Percorso Accademico", "Laureati, laureati in corso e tasso di prosecuzione al II anno.", "#EF4444"),
         ("Varianti del Corso", "Tasso di prosecuzione per famiglia di corso L-8.", "#818CF8"),
         ("Tasse e Contributi", "Confronto contributo massimo annuo tra atenei statali e non statali.", "#EF4444"),
@@ -707,7 +707,7 @@ elif sezione == "Profilo Studenti":
         "Seleziona l'anno di riferimento per il confronto con i pulsanti in alto.")
     anno_ult_alma = int(alma_profilo['anno'].max())
     val_ult = alma_profilo[alma_profilo['anno']==anno_ult_alma].iloc[0]
-    indicatori_gauge = [('pct_soddisfatti','Soddisfatti del corso','#14B8A6'),('pct_riiscrizione','Si reiscriverebbero','#60A5FA'),('pct_magistrale','Prosegue magistrale','#C084FC')]
+    indicatori_gauge = [('pct_soddisfatti','Soddisfatti del corso','#14B8A6'),('pct_riiscrizione','Si reiscriverebbero','#60A5FA'),('pct_magistrale','Intende proseguire (LM)','#C084FC')]
     anni_ref = [a for a in alma_profilo['anno'] if a != anno_ult_alma]
     anno_ref_def = anni_ref[-1]
     fig_gauge = go.Figure()
@@ -745,8 +745,8 @@ elif sezione == "Profilo Studenti":
 
     # G9 — Destinazione magistrale
     if alma_ok and not df_dest.empty:
-        chart_header("Destinazione alla magistrale — dove proseguono gli studi",
-            "Distribuzione percentuale degli studenti L-8 che si iscrivono alla laurea magistrale per destinazione geografica. 'Altro' include Sud-Isole, atenei telematici e atenei esteri.",
+        chart_header("Destinazione alla magistrale — dove intendono proseguire gli studi",
+            "Distribuzione percentuale, per destinazione geografica, dei laureati L-8 che al momento della laurea dichiarano di voler proseguire con la laurea magistrale (AlmaLaurea, Profilo dei Laureati: si tratta di intenzioni, non di iscrizioni effettive). 'Altro' include Sud-Isole, atenei telematici e atenei esteri.",
             "Passa il cursore sulle barre per vedere la percentuale esatta di ciascun segmento. Hover su 'Altro' per il dettaglio.")
         df_dest2 = df_dest.copy()
         df_dest2['Altro'] = df_dest2['Altro Sud-Isole'].fillna(0) + df_dest2['Telematico'].fillna(0) + df_dest2['Estero'].fillna(0)
@@ -772,7 +772,7 @@ elif sezione == "Profilo Studenti":
             title=dict(text='Destinazione alla Magistrale — Laureati L-8 (2020–2025)', font=dict(size=18, color='#F5F5F7', family='Inter'), x=0.5, xanchor='center'),
             legend=dict(orientation='h', y=1.10, x=0.5, xanchor='center', bgcolor='rgba(0,0,0,0)', font=dict(color='#C8C8C8', size=12)),
             annotations=[dict(x=0.5, y=-0.20, xref='paper', yref='paper',
-                    text=f"<b style='color:#14B8A6'>{fmt(media_stesso,1)}%</b><span style='color:#C8C8C8'> resta nello stesso ateneo · </span><b style='color:#60A5FA'>{fmt(media_nord,1)}%</b><span style='color:#C8C8C8'> sceglie un ateneo del Nord</span>",
+                    text=f"<b style='color:#14B8A6'>{fmt(media_stesso,1)}%</b><span style='color:#C8C8C8'> intende restare nello stesso ateneo · </span><b style='color:#60A5FA'>{fmt(media_nord,1)}%</b><span style='color:#C8C8C8'> indica un altro ateneo del Nord (media 2020–2025)</span>",
                     showarrow=False, font=dict(size=12, family='Inter'), align='center'),
                 dict(x=0.99, y=-0.26, xref='paper', yref='paper', text='Fonte: AlmaLaurea · "Altro" include Sud-Isole, Telematico, Estero',
                     showarrow=False, font=dict(size=10, color='#9CA3AF'), xanchor='right')],
@@ -904,7 +904,7 @@ elif sezione == "Varianti del Corso":
     st.markdown("---")
     chart_header("Tasso di prosecuzione al II anno per famiglia di corso — iC14",
         "Confronto del tasso medio di prosecuzione al II anno (iC14 ANVUR) per ciascuna macro-famiglia di corso L-8, usando 'Informatica' come baseline. Verde = superiore alla baseline, rosso = inferiore.",
-        "Passa il cursore sulle barre per vedere il tasso di abbandono e il numero di atenei. Hover su Multidisciplinare per le varianti incluse.")
+        "Passa il cursore sulle barre per vedere la quota che non prosegue nello stesso corso e il numero di atenei. Hover su Multidisciplinare per le varianti incluse.")
     ic14_var = merge14_var.groupby('macro_famiglia')['perc_iC14'].mean().reset_index()
     ic14_var.columns = ['famiglia','prosecuzione']
     ic14_var['prosecuzione'] = ic14_var['prosecuzione'].round(1)
@@ -924,7 +924,7 @@ elif sezione == "Varianti del Corso":
     ic14_var['colore'] = ic14_var.apply(get_colore_var, axis=1)
     def build_hover_var(row):
         if row['famiglia'] == 'Multidisciplinare': return hover_multi
-        return f"<b>{row['famiglia']}</b><br>Prosecuzione: <b>{fmt(row['prosecuzione'],1)}%</b><br>Abbandono: <b>{fmt(row['abbandono'],1)}%</b><br>N° atenei: <b>{row['n_atenei']}</b>"
+        return f"<b>{row['famiglia']}</b><br>Prosecuzione: <b>{fmt(row['prosecuzione'],1)}%</b><br>Non prosegue nello stesso corso: <b>{fmt(row['abbandono'],1)}%</b><br><span style='font-size:10px'>(include chi cambia corso o ateneo)</span><br>N° atenei: <b>{row['n_atenei']}</b>"
     ic14_var['hover'] = ic14_var.apply(build_hover_var, axis=1)
     fig_var = go.Figure()
     fig_var.add_trace(go.Bar(x=ic14_var['prosecuzione'], y=ic14_var['famiglia'], orientation='h',
@@ -1047,7 +1047,7 @@ elif sezione == "Analisi Avanzata":
 
     # G15 — Radiale iC16BIS
     chart_header("Studenti al II anno con ≥ 2/3 CFU — iC16BIS",
-        "Grafico radiale che mostra la percentuale media nazionale di studenti che al II anno hanno acquisito almeno 2/3 dei CFU previsti (indicatore iC16BIS ANVUR). Ogni arco rappresenta un anno accademico.",
+        "Grafico radiale che mostra la percentuale media nazionale di immatricolati puri che proseguono al II anno nello stesso corso avendo acquisito almeno 2/3 dei CFU previsti al I anno (indicatore iC16BIS ANVUR). Ogni arco rappresenta una coorte di immatricolati (2024 = a.a. 2024/25).",
         "Passa il cursore sugli archi per vedere il valore per anno.")
     anni_ic16 = ic16_naz['anno'].tolist()
     valori_ic16 = ic16_naz['pct'].tolist()
@@ -1171,9 +1171,9 @@ elif sezione == "Sintesi":
         {'label':'Avvii di carriera 2025/26','value':fmt(avvi_2025),'delta':'trend crescita 2020-2025','color':'#2DD4BF','bg':'#134E4A'},
         {'label':'Crescita laureati','value':f'+{fmt(crescita_lau)}%','delta':f'2010 → {ANNO_LAU}','color':'#2DD4BF','bg':'#134E4A'},
         {'label':'Soddisfatti del corso','value':'88,7%','delta':'AlmaLaurea 2025','color':'#34D399','bg':'#064E3B'},
-        {'label':'Prosegue magistrale','value':'82,7%','delta':'AlmaLaurea 2025','color':'#34D399','bg':'#064E3B'},
+        {'label':'Intende proseguire (LM)','value':'82,7%','delta':'AlmaLaurea 2025','color':'#34D399','bg':'#064E3B'},
         {'label':'Retribuzione media 2025','value':'€1.327','delta':'+17% vs 2020','color':'#34D399','bg':'#064E3B'},
-        {'label':'Occupazione a 1 anno','value':'36,1%','delta':'82,7% fa magistrale','color':'#FCD34D','bg':'#78350F'},
+        {'label':'Occupazione a 1 anno','value':'36,1%','delta':'82,7% intende proseguire (LM)','color':'#FCD34D','bg':'#78350F'},
         {'label':'Quota Centro Italia','value':f'{fmt(q_centro)}%','delta':f'{n_centro} atenei attivi','color':'#FCD34D','bg':'#78350F'},
         {'label':'Atenei telematici L-8','value':str(len(TELEMATICHE_LIST)),'delta':f'su {n_atenei} atenei totali','color':'#34D399','bg':'#064E3B'},
     ]
@@ -1197,10 +1197,10 @@ elif sezione == "Sintesi":
     st.markdown("## Considerazioni principali")
     st.markdown(f"""<div class="section-card"><p><b style="color:#F5F5F7">Domanda e offerta formativa.</b> In Italia sono <b style="color:#14B8A6">{n_atenei} gli atenei</b> che offrono corsi L-8 Ingegneria dell'Informazione, inclusi <b style="color:#14B8A6">{len(TELEMATICHE_LIST)} atenei telematici</b>. Gli avvii di carriera al primo anno si attestano a <b style="color:#F5F5F7">{fmt(avvi_2025)}</b> nell'anno accademico 2025/26, in crescita rispetto al periodo post-pandemia.</p></div>""", unsafe_allow_html=True)
     st.markdown(f"""<div class="section-card"><p><b style="color:#F5F5F7">Distribuzione geografica.</b> Nell'a.a. {anno_ult}/{str(anno_ult+1)[2:]} il <b style="color:#3B82F6">Nord Italia</b> concentra il {fmt(q_nord)}% degli avvii di carriera, trainato dai Politecnici di Milano e Torino. Il <b style="color:#10B981">Centro Italia</b> conta {n_centro} atenei attivi con il {fmt(q_centro)}% degli avvii, forte grazie a La Sapienza e agli atenei romani. Molise, Valle d'Aosta e Basilicata non ospitano atenei con corsi L-8 attivi.</p></div>""", unsafe_allow_html=True)
-    st.markdown("""<div class="section-card"><p><b style="color:#F5F5F7">Profilo e soddisfazione.</b> L'<b style="color:#34D399">88,7%</b> dei laureati si dichiara soddisfatto del corso (AlmaLaurea 2025), con il <b style="color:#34D399">73,1%</b> che si reiscriverebbe allo stesso corso. La prosecuzione alla magistrale è elevatissima: <b style="color:#F5F5F7">82,7%</b>. La retribuzione media netta mensile è di <b style="color:#14B8A6">€1.327</b>.</p></div>""", unsafe_allow_html=True)
-    st.markdown(f"""<div class="section-card"><p><b style="color:#F5F5F7">Tassazione.</b> Il contributo massimo annuo per gli <b style="color:#14B8A6">atenei statali</b> varia da <b style="color:#F5F5F7">€{fmt(st_t.min())}</b> a <b style="color:#F5F5F7">€{fmt(st_t.max())}</b>, con una media di circa <b style="color:#F5F5F7">€{fmt(st_t.mean())}</b>. Gli atenei <b style="color:#EF4444">non statali</b> si collocano significativamente al di sopra, con il Campus Bio-Medico a €{fmt(cbm_t)}.</p></div>""", unsafe_allow_html=True)
+    st.markdown("""<div class="section-card"><p><b style="color:#F5F5F7">Profilo e soddisfazione.</b> L'<b style="color:#34D399">88,7%</b> dei laureati si dichiara soddisfatto del corso (AlmaLaurea 2025), con il <b style="color:#34D399">73,1%</b> che si reiscriverebbe allo stesso corso dello stesso ateneo. Molto elevata l'intenzione di proseguire con la laurea magistrale: <b style="color:#F5F5F7">82,7%</b>. La retribuzione media netta mensile è di <b style="color:#14B8A6">€1.327</b>.</p></div>""", unsafe_allow_html=True)
+    st.markdown(f"""<div class="section-card"><p><b style="color:#F5F5F7">Tassazione.</b> Nel campione di <b style="color:#14B8A6">{len(st_t)} atenei statali</b> analizzati, il contributo massimo annuo varia da <b style="color:#F5F5F7">€{fmt(st_t.min())}</b> a <b style="color:#F5F5F7">€{fmt(st_t.max())}</b>, con una media di circa <b style="color:#F5F5F7">€{fmt(st_t.mean())}</b>. Gli atenei <b style="color:#EF4444">non statali</b> del campione si collocano significativamente al di sopra, con il Campus Bio-Medico a €{fmt(cbm_t)}.</p></div>""", unsafe_allow_html=True)
     st.markdown(f"""<div class="section-card"><p><b style="color:#F5F5F7">Percorso accademico.</b> La quota di immatricolati che prosegue nello stesso corso al secondo anno (iC14) è passata dal <b style="color:#14B8A6">{fmt(ic14_primo,1)}%</b> della coorte {ic14_a0}/{str(ic14_a0+1)[2:]} al <b style="color:#14B8A6">{fmt(ic14_ultimo,1)}%</b> della coorte {ic14_a1}/{str(ic14_a1+1)[2:]}, con variazioni tra famiglie di corso. Le <b style="color:#F59E0B">università telematiche</b> mostrano tassi di prosecuzione strutturalmente inferiori rispetto alle tradizionali.</p></div>""", unsafe_allow_html=True)
     st.markdown("""<div class="section-card" style="border-top: 3px solid #14B8A6;">
-    <p><b style="color:#F5F5F7">Il sistema L-8 Ingegneria dell'Informazione</b> mostra un quadro articolato: domanda in crescita nel quinquennio 2020–2025, elevata soddisfazione dei laureati e forte propensione alla prosecuzione magistrale. Un aspetto da monitorare è il divario tra atenei tradizionali e telematici, sia in termini di prosecuzione che di sbocchi lavorativi.</p>
-    <p style="color:#C8C8C8; font-size:0.82rem; margin-top:1.5rem;">Analisi basata su dati MUR-USTAT, ANVUR AVA2 e AlmaLaurea · Periodo di riferimento: 2010–2025 · Elaborazione: Centro Studi</p>
+    <p><b style="color:#F5F5F7">Il sistema L-8 Ingegneria dell'Informazione</b> mostra un quadro articolato: domanda in crescita nel quinquennio 2020–2025, elevata soddisfazione dei laureati e forte propensione alla prosecuzione magistrale. Un aspetto da monitorare è il divario tra atenei tradizionali e telematici nella prosecuzione al secondo anno.</p>
+    <p style="color:#C8C8C8; font-size:0.82rem; margin-top:1.5rem;">Analisi basata su dati MUR-USTAT, ANVUR AVA3 e AlmaLaurea · Periodo di riferimento: 2010–2025 · Elaborazione: Centro Studi</p>
     </div>""", unsafe_allow_html=True)
