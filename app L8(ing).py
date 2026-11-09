@@ -243,9 +243,13 @@ def prep_indicatori(df):
         .str.encode('latin-1', errors='replace').str.decode('utf-8', errors='replace')\
         .str.title().str.strip().str.replace(r'\s+', ' ', regex=True)
     merge14_var['macro_famiglia'] = merge14_var['corso_pulito'].map(MACRO_FAMIGLIE_CLEAN).fillna('Multidisciplinare')
-    ic14_naz = merge14.groupby('Anno accademico')['perc_iC14'].mean().reset_index()
+    # valori nazionali = MEDIA PESATA (somma numeratori / somma immatricolati puri)
+    def _pesata(m, num, den='Numeratore_00b'):
+        g = m.groupby('Anno accademico')
+        return (g[num].sum() / g[den].sum() * 100).reset_index()
+    ic14_naz = _pesata(merge14, 'Numeratore_14')
     ic14_naz.columns = ['anno', 'ic14']
-    ic21_naz = merge21.groupby('Anno accademico')['perc_iC21'].mean().reset_index()
+    ic21_naz = _pesata(merge21, 'Numeratore_21')
     ic21_naz.columns = ['anno', 'ic21']
     df_destino = ic14_naz.merge(ic21_naz, on='anno')
     df_destino['prosegue_stesso'] = df_destino['ic14'].round(1)
@@ -254,7 +258,7 @@ def prep_indicatori(df):
     df_destino['anno'] = df_destino['anno'].astype(str)
     merge16 = ic16bis.merge(ic00b, on=['Ateneo', 'Anno accademico', 'Nome Corso'], suffixes=('_16', '_00b'))
     merge16['perc_iC16'] = merge16['Numeratore_16'] / merge16['Numeratore_00b'] * 100
-    ic16_naz = merge16.groupby('Anno accademico')['perc_iC16'].mean().reset_index()
+    ic16_naz = _pesata(merge16, 'Numeratore_16')
     ic16_naz.columns = ['anno', 'pct']
     ic16_naz['pct'] = ic16_naz['pct'].round(1)
     return ic14, ic21, ic00b, ic02, merge14, merge14_var, df_destino, ic16_naz
@@ -335,7 +339,7 @@ with st.sidebar:
     """, unsafe_allow_html=True)
     st.markdown('<div class="sidebar-title">Sezioni</div>', unsafe_allow_html=True)
     sezione = st.radio(label="Sezioni", options=[
-        "Panoramica", "Iscritti", "Profilo Studenti", "Percorso Accademico",
+        "Panoramica", "Attrattività", "Profilo Studenti", "Percorso Accademico",
         "Varianti del Corso", "Tasse e Contributi", "Analisi Avanzata", "Sintesi",
     ], label_visibility="collapsed")
     st.markdown("---")
@@ -372,7 +376,7 @@ if sezione == "Panoramica":
     st.markdown("---")
     st.markdown("### Struttura dell'analisi")
     sezioni_info = [
-        ("Iscritti", "Avvii di carriera al primo anno, distribuzione geografica, top atenei, focus sul Lazio e totale iscritti.", "#14B8A6"),
+        ("Attrattività", "Avvii di carriera al primo anno, distribuzione geografica, top atenei, focus sul Lazio e totale iscritti.", "#14B8A6"),
         ("Profilo Studenti", "Soddisfazione, riiscrizione e intenzione di proseguire alla magistrale.", "#2DD4BF"),
         ("Percorso Accademico", "Laureati, laureati in corso e tasso di prosecuzione al II anno.", "#EF4444"),
         ("Varianti del Corso", "Tasso di prosecuzione per famiglia di corso L-8.", "#818CF8"),
@@ -391,8 +395,8 @@ if sezione == "Panoramica":
 # ══════════════════════════════════════════════════════════════════════════════
 # ISCRITTI
 # ══════════════════════════════════════════════════════════════════════════════
-elif sezione == "Iscritti":
-    st.markdown("## Iscritti")
+elif sezione == "Attrattività":
+    st.markdown("## Attrattività")
     st.markdown("---")
 
     # G1 — Avvii nazionali
@@ -823,7 +827,7 @@ elif sezione == "Percorso Accademico":
 
     # G11 — Donut
     chart_header("Cosa succede dopo il primo anno — iC14 + iC21",
-        "Il grafico mostra la distribuzione degli immatricolati puri L-8 al termine del primo anno: chi prosegue nello stesso corso (iC14 ANVUR), chi cambia corso o ateneo ma resta nel sistema universitario (differenza iC21-iC14), e chi lascia l'università (complemento a 1 di iC21).",
+        "Il grafico mostra la distribuzione degli immatricolati puri L-8 al termine del primo anno: chi prosegue nello stesso corso (iC14 ANVUR, media ponderata*), chi cambia corso o ateneo ma resta nel sistema universitario (differenza iC21-iC14), e chi lascia l'università (complemento a 1 di iC21).",
         "Seleziona l'anno con i pulsanti. Passa il cursore sulle fette per vedere le percentuali esatte.")
     anni_donut = sorted(df_destino['anno'].unique())
     fig_donut = go.Figure()
@@ -844,7 +848,7 @@ elif sezione == "Percorso Accademico":
             args=[{'visible': vis}, {'title': dict(text=f"Cosa succede dopo il primo anno — L-8 {anno}", font=dict(size=18, color='#F5F5F7', family='Inter'), x=0.5, xanchor='center'),
                 'annotations': [dict(text=f"<b>{fmt(row['prosegue_stesso'],1)}%</b><br><span style='color:#C8C8C8;font-size:11px'>resta nello<br>stesso corso</span>",
                         x=0.5, y=0.5, xref='paper', yref='paper', showarrow=False, font=dict(size=24, color='white', family='Inter'), align='center'),
-                    dict(x=0.99, y=-0.08, xref='paper', yref='paper', text='Fonte: ANVUR iC14 + iC21 · Media nazionale corsi L-8',
+                    dict(x=0.99, y=-0.08, xref='paper', yref='paper', text='Fonte: ANVUR iC14 + iC21 · Valori nazionali*<br>* Media ponderata',
                         showarrow=False, font=dict(size=10, color='#9CA3AF'), align='right', xanchor='right')]}]))
     row0 = df_destino[df_destino['anno']==anni_donut[-1]].iloc[0]
     fig_donut.update_layout(title=dict(text=f"Cosa succede dopo il primo anno — L-8 {anni_donut[-1]}", font=dict(size=18, color='#F5F5F7', family='Inter'), x=0.5, xanchor='center'),
@@ -853,16 +857,16 @@ elif sezione == "Percorso Accademico":
             font=dict(size=12, family='Inter', color='#F5F5F7'), active=len(anni_donut)-1, pad=dict(r=6,l=6,t=6,b=6))],
         annotations=[dict(text=f"<b>{fmt(row0['prosegue_stesso'],1)}%</b><br><span style='color:#C8C8C8;font-size:11px'>resta nello<br>stesso corso</span>",
                 x=0.5, y=0.5, xref='paper', yref='paper', showarrow=False, font=dict(size=24, color='white', family='Inter'), align='center'),
-            dict(x=0.99, y=-0.08, xref='paper', yref='paper', text='Fonte: ANVUR iC14 + iC21 · Media nazionale corsi L-8',
+            dict(x=0.99, y=-0.08, xref='paper', yref='paper', text='Fonte: ANVUR iC14 + iC21 · Valori nazionali*<br>* Media ponderata',
                 showarrow=False, font=dict(size=10, color='#9CA3AF'), align='right', xanchor='right')],
-        height=560, margin=dict(t=120, b=80, l=80, r=80), font=dict(family='Inter', size=12), paper_bgcolor=BG_PAPER, showlegend=True,
+        height=580, margin=dict(t=120, b=100, l=80, r=80), font=dict(family='Inter', size=12), paper_bgcolor=BG_PAPER, showlegend=True,
         legend=dict(font=dict(color='#C8C8C8', size=12), bgcolor='rgba(0,0,0,0)', orientation='h', x=0.5, xanchor='center', y=-0.08))
     st.plotly_chart(fig_donut, use_container_width=True)
     st.markdown("---")
 
     # G12 — iC02
     chart_header("% Laureati entro la durata normale del corso — iC02",
-        "Percentuale nazionale di laureati L-8 che si laureano entro la durata normale del corso, calcolata come rapporto tra il totale dei laureati in corso e il totale dei laureati (media pesata). Il dato più recente è evidenziato in verde chiaro.",
+        "Percentuale nazionale di laureati L-8 che si laureano entro la durata normale del corso, calcolata come rapporto tra il totale dei laureati in corso e il totale dei laureati (media ponderata*). Il dato più recente è evidenziato in verde chiaro.",
         "Passa il cursore sulle barre per vedere il valore esatto per anno.")
     df_ic02 = pd.read_csv('IC02(L8)PENTAHO.csv', sep=',', encoding='utf-8')
     df_ic02['Numeratore'] = pd.to_numeric(df_ic02['Numeratore'].astype(str).str.replace(',','',regex=False), errors='coerce')
@@ -891,7 +895,7 @@ elif sezione == "Percorso Accademico":
         barmode='overlay', margin=dict(t=100, b=80, l=80, r=120), height=420,
         annotations=[dict(x=media_ic02, y=1.02, xref='x', yref='paper', text=f'Media: {fmt(media_ic02,1)}%',
                 showarrow=False, font=dict(size=11, color='#F59E0B'), align='center'),
-            fonte_ann('Fonte: ANVUR — % laureati entro durata normale (iC02) · Esclusi valori >100%')])
+            fonte_ann('Fonte: ANVUR — iC02 · Esclusi valori >100%<br>* Media ponderata')])
     fig_ic02.update_xaxes(showgrid=False, tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A', ticksuffix='%', range=[0, max(60, ic02_naz['pct'].max()*1.25)])
     fig_ic02.update_yaxes(tickfont=dict(color='#C8C8C8', size=13), linecolor='#2D5A5A')
     st.plotly_chart(fig_ic02, use_container_width=True)
@@ -903,7 +907,7 @@ elif sezione == "Varianti del Corso":
     st.markdown("## Varianti del Corso")
     st.markdown("---")
     chart_header("Tasso di prosecuzione al II anno per famiglia di corso — iC14",
-        "Confronto del tasso medio di prosecuzione al II anno (iC14 ANVUR) per ciascuna macro-famiglia di corso L-8, usando 'Informatica' come baseline. Verde = superiore alla baseline, rosso = inferiore.",
+        "Confronto del tasso di prosecuzione al II anno (iC14 ANVUR) per ciascuna macro-famiglia di corso L-8, usando 'Informatica' come baseline. Il valore è la media semplice tra i corsi della famiglia: ogni corso pesa uguale, così si confronta il corso tipico di ciascuna famiglia. Verde = superiore alla baseline, rosso = inferiore.",
         "Passa il cursore sulle barre per vedere la quota che non prosegue nello stesso corso e il numero di atenei. Hover su Multidisciplinare per le varianti incluse.")
     ic14_var = merge14_var.groupby('macro_famiglia')['perc_iC14'].mean().reset_index()
     ic14_var.columns = ['famiglia','prosecuzione']
@@ -940,7 +944,7 @@ elif sezione == "Varianti del Corso":
             dict(x=0.5, y=-0.20, xref='paper', yref='paper',
                 text="<b style='color:#14B8A6'>Verde</b> = sopra baseline · <b style='color:#F87171'>Rosso</b> = sotto baseline · Hover su Multidisciplinare per le varianti",
                 showarrow=False, font=dict(size=11, color='#C8C8C8'), align='center'),
-            dict(x=0.99, y=-0.26, xref='paper', yref='paper', text='Fonte: ANVUR iC14 · Media 2020–2024 per famiglia di corso',
+            dict(x=0.99, y=-0.26, xref='paper', yref='paper', text='Fonte: ANVUR iC14 · Media semplice tra i corsi, 2020–2024',
                 showarrow=False, font=dict(size=10, color='#9CA3AF'), xanchor='right')],
         height=520, margin=dict(t=80, b=100, l=160, r=180))
     fig_var.update_xaxes(title=dict(text='% prosecuzione al II anno', font=dict(color='#C8C8C8')), showgrid=False, ticksuffix='%', tickfont=dict(color='#C8C8C8'), linecolor='#2D5A5A', range=[0, 100])
@@ -1047,7 +1051,7 @@ elif sezione == "Analisi Avanzata":
 
     # G15 — Radiale iC16BIS
     chart_header("Studenti al II anno con ≥ 2/3 CFU — iC16BIS",
-        "Grafico radiale che mostra la percentuale media nazionale di immatricolati puri che proseguono al II anno nello stesso corso avendo acquisito almeno 2/3 dei CFU previsti al I anno (indicatore iC16BIS ANVUR). Ogni arco rappresenta una coorte di immatricolati (2024 = a.a. 2024/25).",
+        "Grafico radiale che mostra la percentuale media nazionale di immatricolati puri che proseguono al II anno nello stesso corso avendo acquisito almeno 2/3 dei CFU previsti al I anno (indicatore iC16BIS ANVUR, media ponderata*). Ogni arco rappresenta una coorte di immatricolati (2024 = a.a. 2024/25).",
         "Passa il cursore sugli archi per vedere il valore per anno.")
     anni_ic16 = ic16_naz['anno'].tolist()
     valori_ic16 = ic16_naz['pct'].tolist()
@@ -1077,8 +1081,8 @@ elif sezione == "Analisi Avanzata":
         xaxis=dict(visible=False, range=[-1.3, 1.5]), yaxis=dict(visible=False, range=[-1.3, 1.3]),
         margin=dict(t=100, b=60, l=60, r=150), height=520,
         annotations=[dict(x=0, y=0.05, text=f'<b>{fmt(media_ic16,1)}%</b>', showarrow=False, font=dict(size=26, color='white', family='Inter')),
-            dict(x=0, y=-0.12, text='media nazionale', showarrow=False, font=dict(size=11, color='#C8C8C8', family='Inter')),
-            dict(x=0.99, y=-0.08, xref='paper', yref='paper', text='Fonte: ANVUR Cruscotto PENTAHO — iC16BIS',
+            dict(x=0, y=-0.12, text='media periodo*', showarrow=False, font=dict(size=11, color='#C8C8C8', family='Inter')),
+            dict(x=0.99, y=-0.08, xref='paper', yref='paper', text='Fonte: ANVUR Cruscotto PENTAHO — iC16BIS<br>* Media ponderata',
                 showarrow=False, font=dict(size=10, color='#9CA3AF'), xanchor='right')])
     st.plotly_chart(fig_radial, use_container_width=True)
     st.markdown("---")
@@ -1161,7 +1165,7 @@ elif sezione == "Sintesi":
     atenei_macro = df[df['ID Indicatore']=='iC00a'].dropna(subset=['macro']).groupby('macro')['Ateneo'].nunique()
     q_nord, q_centro = quota_macro.get('Nord', 0), quota_macro.get('Centro', 0)
     n_centro = int(atenei_macro.get('Centro', 0))
-    ic14_anni = merge14.groupby('Anno accademico')['perc_iC14'].mean()
+    ic14_anni = merge14.groupby('Anno accademico')['Numeratore_14'].sum() / merge14.groupby('Anno accademico')['Numeratore_00b'].sum() * 100
     ic14_primo, ic14_ultimo = ic14_anni.iloc[0], ic14_anni.iloc[-1]
     ic14_a0, ic14_a1 = int(ic14_anni.index[0]), int(ic14_anni.index[-1])
     st_t = tasse[tasse['Tipo']=='Statale']['Contributo max']
@@ -1199,8 +1203,8 @@ elif sezione == "Sintesi":
     st.markdown(f"""<div class="section-card"><p><b style="color:#F5F5F7">Distribuzione geografica.</b> Nell'a.a. {anno_ult}/{str(anno_ult+1)[2:]} il <b style="color:#3B82F6">Nord Italia</b> concentra il {fmt(q_nord)}% degli avvii di carriera, trainato dai Politecnici di Milano e Torino. Il <b style="color:#10B981">Centro Italia</b> conta {n_centro} atenei attivi con il {fmt(q_centro)}% degli avvii, forte grazie a La Sapienza e agli atenei romani. Molise, Valle d'Aosta e Basilicata non ospitano atenei con corsi L-8 attivi.</p></div>""", unsafe_allow_html=True)
     st.markdown("""<div class="section-card"><p><b style="color:#F5F5F7">Profilo e soddisfazione.</b> L'<b style="color:#34D399">88,7%</b> dei laureati si dichiara soddisfatto del corso (AlmaLaurea 2025), con il <b style="color:#34D399">73,1%</b> che si reiscriverebbe allo stesso corso dello stesso ateneo. Molto elevata l'intenzione di proseguire con la laurea magistrale: <b style="color:#F5F5F7">82,7%</b>. La retribuzione media netta mensile è di <b style="color:#14B8A6">€1.327</b>.</p></div>""", unsafe_allow_html=True)
     st.markdown(f"""<div class="section-card"><p><b style="color:#F5F5F7">Tassazione.</b> Nel campione di <b style="color:#14B8A6">{len(st_t)} atenei statali</b> analizzati, il contributo massimo annuo varia da <b style="color:#F5F5F7">€{fmt(st_t.min())}</b> a <b style="color:#F5F5F7">€{fmt(st_t.max())}</b>, con una media di circa <b style="color:#F5F5F7">€{fmt(st_t.mean())}</b>. Gli atenei <b style="color:#EF4444">non statali</b> del campione si collocano significativamente al di sopra, con il Campus Bio-Medico a €{fmt(cbm_t)}.</p></div>""", unsafe_allow_html=True)
-    st.markdown(f"""<div class="section-card"><p><b style="color:#F5F5F7">Percorso accademico.</b> La quota di immatricolati che prosegue nello stesso corso al secondo anno (iC14) è passata dal <b style="color:#14B8A6">{fmt(ic14_primo,1)}%</b> della coorte {ic14_a0}/{str(ic14_a0+1)[2:]} al <b style="color:#14B8A6">{fmt(ic14_ultimo,1)}%</b> della coorte {ic14_a1}/{str(ic14_a1+1)[2:]}, con variazioni tra famiglie di corso. Le <b style="color:#F59E0B">università telematiche</b> mostrano tassi di prosecuzione strutturalmente inferiori rispetto alle tradizionali.</p></div>""", unsafe_allow_html=True)
+    st.markdown(f"""<div class="section-card"><p><b style="color:#F5F5F7">Percorso accademico.</b> La quota di immatricolati che prosegue nello stesso corso al secondo anno (iC14)* è passata dal <b style="color:#14B8A6">{fmt(ic14_primo,1)}%</b> della coorte {ic14_a0}/{str(ic14_a0+1)[2:]} al <b style="color:#14B8A6">{fmt(ic14_ultimo,1)}%</b> della coorte {ic14_a1}/{str(ic14_a1+1)[2:]}, con variazioni tra famiglie di corso. Le <b style="color:#F59E0B">università telematiche</b> mostrano tassi di prosecuzione strutturalmente inferiori rispetto alle tradizionali.</p></div>""", unsafe_allow_html=True)
     st.markdown("""<div class="section-card" style="border-top: 3px solid #14B8A6;">
     <p><b style="color:#F5F5F7">Il sistema L-8 Ingegneria dell'Informazione</b> mostra un quadro articolato: domanda in crescita nel quinquennio 2020–2025, elevata soddisfazione dei laureati e forte propensione alla prosecuzione magistrale. Un aspetto da monitorare è il divario tra atenei tradizionali e telematici nella prosecuzione al secondo anno.</p>
-    <p style="color:#C8C8C8; font-size:0.82rem; margin-top:1.5rem;">Analisi basata su dati MUR-USTAT, ANVUR AVA3 e AlmaLaurea · Periodo di riferimento: 2010–2025 · Elaborazione: Centro Studi</p>
+    <p style="color:#C8C8C8; font-size:0.82rem; margin-top:1.5rem;">Analisi basata su dati MUR-USTAT, ANVUR AVA3 e AlmaLaurea · Periodo di riferimento: 2010–2025 · Elaborazione: Centro Studi<br>* Media ponderata</p>
     </div>""", unsafe_allow_html=True)
